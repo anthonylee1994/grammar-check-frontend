@@ -62,7 +62,7 @@ export const WritingDetailPage: React.FC = () => {
     const highlightErrors = (text: string | null, errors: WritingError[] = []) => {
         if (!text || errors.length === 0) {
             return (
-                <Typography variant="body1" sx={{whiteSpace: "pre-wrap", lineHeight: 1.8}}>
+                <Typography variant="body1" sx={{whiteSpace: "pre-wrap", lineHeight: 1.8, fontSize: {xs: "0.875rem", sm: "1rem"}}}>
                     {text || "No text available"}
                 </Typography>
             );
@@ -168,7 +168,7 @@ export const WritingDetailPage: React.FC = () => {
         }
 
         return (
-            <Typography variant="body1" component="div" sx={{whiteSpace: "pre-wrap", lineHeight: 1.8}}>
+            <Typography variant="body1" component="div" sx={{whiteSpace: "pre-wrap", lineHeight: 1.8, fontSize: {xs: "0.875rem", sm: "1rem"}}}>
                 {segments}
             </Typography>
         );
@@ -193,10 +193,10 @@ export const WritingDetailPage: React.FC = () => {
     }
 
     return (
-        <Box sx={{minHeight: "100vh", backgroundColor: "rgb(247, 251, 255)", py: 4}}>
-            <Container maxWidth="lg">
-                <Box sx={{mb: 3}}>
-                    <Button startIcon={<ArrowBackIcon />} onClick={() => navigate("/")} variant="outlined">
+        <Box sx={{minHeight: "100vh", backgroundColor: "rgb(247, 251, 255)", py: {xs: 2, sm: 3, md: 4}}}>
+            <Container maxWidth="lg" sx={{px: {xs: 2, sm: 3}}}>
+                <Box sx={{mb: {xs: 2, md: 3}}}>
+                    <Button startIcon={<ArrowBackIcon />} onClick={() => navigate("/")} variant="outlined" sx={{fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>
                         Back
                     </Button>
                 </Box>
@@ -208,24 +208,33 @@ export const WritingDetailPage: React.FC = () => {
                 )}
 
                 {/* Header Card */}
-                <Paper elevation={2} sx={{p: 3, mb: 3}}>
-                    <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2}}>
-                        <Box>
-                            <Typography variant="h4" component="h1" fontWeight={600} gutterBottom>
+                <Paper elevation={2} sx={{p: {xs: 2, sm: 3}, mb: {xs: 2, md: 3}}}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: {xs: "column", sm: "row"},
+                            justifyContent: "space-between",
+                            alignItems: {xs: "flex-start", sm: "flex-start"},
+                            gap: {xs: 2, sm: 0},
+                            mb: 2,
+                        }}
+                    >
+                        <Box sx={{flex: 1}}>
+                            <Typography variant="h4" component="h1" fontWeight={600} gutterBottom sx={{fontSize: {xs: "1.5rem", sm: "2rem"}}}>
                                 {currentWriting.title || "Untitled Writing"}
                             </Typography>
-                            <Stack direction="row" spacing={2} alignItems="center">
-                                <Chip label={currentWriting.status} color={getStatusColor(currentWriting.status)} sx={{textTransform: "capitalize"}} />
-                                <Typography variant="body2" color="text.secondary">
+                            <Stack direction={{xs: "column", sm: "row"}} spacing={{xs: 1, sm: 2}} alignItems={{xs: "flex-start", sm: "center"}}>
+                                <Chip label={currentWriting.status} color={getStatusColor(currentWriting.status)} sx={{textTransform: "capitalize"}} size="small" />
+                                <Typography variant="body2" color="text.secondary" sx={{fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>
                                     Created: {formatDate(currentWriting.created_at)}
                                 </Typography>
                             </Stack>
                         </Box>
-                        <Box sx={{textAlign: "center"}}>
-                            <Typography variant="h3" color="error" fontWeight={700}>
+                        <Box sx={{textAlign: {xs: "left", sm: "center"}, minWidth: {xs: "auto", sm: "100px"}}}>
+                            <Typography variant="h3" color="error" fontWeight={700} sx={{fontSize: {xs: "2rem", sm: "3rem"}}}>
                                 {currentWriting.error_count || 0}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" color="text.secondary" sx={{fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>
                                 Errors Found
                             </Typography>
                         </Box>
@@ -243,11 +252,11 @@ export const WritingDetailPage: React.FC = () => {
 
                 {/* Image */}
                 {currentWriting.image_url && (
-                    <Paper elevation={2} sx={{p: 3, mb: 3}}>
-                        <Typography variant="h6" fontWeight={600} gutterBottom sx={{display: "flex", alignItems: "center", gap: 1}}>
-                            <ImageIcon /> Original Image
+                    <Paper elevation={2} sx={{p: {xs: 2, sm: 3}, mb: {xs: 2, md: 3}}}>
+                        <Typography variant="h6" fontWeight={600} gutterBottom sx={{display: "flex", alignItems: "center", gap: 1, fontSize: {xs: "1rem", sm: "1.25rem"}}}>
+                            <ImageIcon sx={{fontSize: {xs: "1.25rem", sm: "1.5rem"}}} /> Original Image
                         </Typography>
-                        <Box sx={{textAlign: "center", mt: 2}}>
+                        <Box sx={{textAlign: "center", mt: {xs: 1.5, sm: 2}}}>
                             <img
                                 src={currentWriting.image_url}
                                 alt="Writing"
@@ -264,26 +273,26 @@ export const WritingDetailPage: React.FC = () => {
 
                 {/* Text Comparison */}
                 {currentWriting.status === "completed" && (
-                    <Box sx={{display: "flex", gap: 3, mb: 3, flexDirection: {xs: "column", md: "row"}}}>
+                    <Box sx={{display: "flex", gap: {xs: 2, md: 3}, mb: {xs: 2, md: 3}, flexDirection: {xs: "column", md: "row"}}}>
                         {/* Original Text */}
                         <Box sx={{flex: 1}}>
-                            <Paper elevation={2} sx={{p: 3, height: "100%"}}>
-                                <Typography variant="h6" fontWeight={600} gutterBottom color="error">
+                            <Paper elevation={2} sx={{p: {xs: 2, sm: 3}, height: "100%"}}>
+                                <Typography variant="h6" fontWeight={600} gutterBottom color="error" sx={{fontSize: {xs: "1rem", sm: "1.25rem"}}}>
                                     Original Text (with errors highlighted)
                                 </Typography>
-                                <Divider sx={{mb: 2}} />
+                                <Divider sx={{mb: {xs: 1.5, sm: 2}}} />
                                 {highlightErrors(currentWriting.original_text, currentWriting.grammar_errors)}
                             </Paper>
                         </Box>
 
                         {/* Corrected Text */}
                         <Box sx={{flex: 1}}>
-                            <Paper elevation={2} sx={{p: 3, height: "100%", backgroundColor: "rgb(237, 247, 237)"}}>
-                                <Typography variant="h6" fontWeight={600} gutterBottom color="success.main">
+                            <Paper elevation={2} sx={{p: {xs: 2, sm: 3}, height: "100%", backgroundColor: "rgb(237, 247, 237)"}}>
+                                <Typography variant="h6" fontWeight={600} gutterBottom color="success.main" sx={{fontSize: {xs: "1rem", sm: "1.25rem"}}}>
                                     Corrected Text
                                 </Typography>
-                                <Divider sx={{mb: 2}} />
-                                <Typography variant="body1" sx={{whiteSpace: "pre-wrap", lineHeight: 1.8}}>
+                                <Divider sx={{mb: {xs: 1.5, sm: 2}}} />
+                                <Typography variant="body1" sx={{whiteSpace: "pre-wrap", lineHeight: 1.8, fontSize: {xs: "0.875rem", sm: "1rem"}}}>
                                     {currentWriting.corrected_text || "No corrected text available"}
                                 </Typography>
                             </Paper>
@@ -293,49 +302,60 @@ export const WritingDetailPage: React.FC = () => {
 
                 {/* Errors Table */}
                 {currentWriting.grammar_errors && currentWriting.grammar_errors.length > 0 && (
-                    <Paper elevation={2} sx={{p: 3}}>
-                        <Typography variant="h6" fontWeight={600} gutterBottom>
+                    <Paper elevation={2} sx={{p: {xs: 2, sm: 3}}}>
+                        <Typography variant="h6" fontWeight={600} gutterBottom sx={{fontSize: {xs: "1rem", sm: "1.25rem"}}}>
                             Error Details ({currentWriting.grammar_errors.length})
                         </Typography>
-                        <Divider sx={{mb: 2}} />
-                        <TableContainer>
-                            <Table sx={{minWidth: 650}}>
+                        <Divider sx={{mb: {xs: 1.5, sm: 2}}} />
+                        <TableContainer sx={{overflowX: "auto"}}>
+                            <Table sx={{minWidth: {xs: 600, md: 650}}}>
                                 <TableHead>
                                     <TableRow sx={{backgroundColor: "rgb(255, 250, 250)"}}>
-                                        <TableCell sx={{fontWeight: 600, width: "5%"}}>#</TableCell>
-                                        <TableCell sx={{fontWeight: 600, width: "12%"}}>Type</TableCell>
-                                        <TableCell sx={{fontWeight: 600, width: "20%"}}>Original</TableCell>
-                                        <TableCell sx={{fontWeight: 600, width: "20%"}}>Correction</TableCell>
-                                        <TableCell sx={{fontWeight: 600, width: "33%"}}>Explanation</TableCell>
+                                        <TableCell sx={{fontWeight: 600, width: "5%", px: {xs: 1, sm: 2}, fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>#</TableCell>
+                                        <TableCell sx={{fontWeight: 600, width: "12%", px: {xs: 1, sm: 2}, fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>Type</TableCell>
+                                        <TableCell sx={{fontWeight: 600, width: "20%", px: {xs: 1, sm: 2}, fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>Original</TableCell>
+                                        <TableCell sx={{fontWeight: 600, width: "20%", px: {xs: 1, sm: 2}, fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>Correction</TableCell>
+                                        <TableCell sx={{fontWeight: 600, width: "33%", px: {xs: 1, sm: 2}, fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>Explanation</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {currentWriting.grammar_errors.map((error, index) => (
                                         <TableRow key={error.id} hover sx={{"&:last-child td, &:last-child th": {border: 0}}}>
-                                            <TableCell>
-                                                <Typography variant="body2" fontWeight={600}>
+                                            <TableCell sx={{px: {xs: 1, sm: 2}}}>
+                                                <Typography variant="body2" fontWeight={600} sx={{fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>
                                                     {index + 1}
                                                 </Typography>
                                             </TableCell>
-                                            <TableCell>
-                                                <Chip label={error.error_type.replace("_", " ")} color={getErrorTypeColor(error.error_type)} size="small" sx={{textTransform: "capitalize"}} />
+                                            <TableCell sx={{px: {xs: 1, sm: 2}}}>
+                                                <Chip
+                                                    label={error.error_type.replace("_", " ")}
+                                                    color={getErrorTypeColor(error.error_type)}
+                                                    size="small"
+                                                    sx={{
+                                                        textTransform: "capitalize",
+                                                        fontSize: {xs: "0.625rem", sm: "0.75rem"},
+                                                        height: {xs: "20px", sm: "24px"},
+                                                    }}
+                                                />
                                             </TableCell>
-                                            <TableCell>
-                                                <Paper sx={{p: 1.5, backgroundColor: "rgba(255, 82, 82, 0.1)", border: "1px solid #ffcdd2"}}>
-                                                    <Typography variant="body2" sx={{fontWeight: 500}}>
+                                            <TableCell sx={{px: {xs: 1, sm: 2}}}>
+                                                <Paper sx={{p: {xs: 1, sm: 1.5}, backgroundColor: "rgba(255, 82, 82, 0.1)", border: "1px solid #ffcdd2"}}>
+                                                    <Typography variant="body2" sx={{fontWeight: 500, fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>
                                                         {error.original}
                                                     </Typography>
                                                 </Paper>
                                             </TableCell>
-                                            <TableCell>
-                                                <Paper sx={{p: 1.5, backgroundColor: "rgba(76, 175, 80, 0.1)", border: "1px solid #c8e6c9"}}>
-                                                    <Typography variant="body2" sx={{fontWeight: 500}}>
+                                            <TableCell sx={{px: {xs: 1, sm: 2}}}>
+                                                <Paper sx={{p: {xs: 1, sm: 1.5}, backgroundColor: "rgba(76, 175, 80, 0.1)", border: "1px solid #c8e6c9"}}>
+                                                    <Typography variant="body2" sx={{fontWeight: 500, fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>
                                                         {error.correction}
                                                     </Typography>
                                                 </Paper>
                                             </TableCell>
-                                            <TableCell>
-                                                <Typography variant="body2">{error.explanation}</Typography>
+                                            <TableCell sx={{px: {xs: 1, sm: 2}}}>
+                                                <Typography variant="body2" sx={{fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>
+                                                    {error.explanation}
+                                                </Typography>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -347,12 +367,12 @@ export const WritingDetailPage: React.FC = () => {
 
                 {/* Processing/Pending State */}
                 {(currentWriting.status === "pending" || currentWriting.status === "processing") && (
-                    <Paper elevation={2} sx={{p: 4, textAlign: "center"}}>
+                    <Paper elevation={2} sx={{p: {xs: 3, sm: 4}, textAlign: "center"}}>
                         <CircularProgress sx={{mb: 2}} />
-                        <Typography variant="h6" gutterBottom>
+                        <Typography variant="h6" gutterBottom sx={{fontSize: {xs: "1rem", sm: "1.25rem"}}}>
                             {currentWriting.status === "pending" ? "Waiting to Process..." : "Processing Your Writing..."}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" sx={{fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>
                             This page will automatically update when processing is complete.
                         </Typography>
                     </Paper>
@@ -360,12 +380,14 @@ export const WritingDetailPage: React.FC = () => {
 
                 {/* Failed State */}
                 {currentWriting.status === "failed" && (
-                    <Paper elevation={2} sx={{p: 4}}>
+                    <Paper elevation={2} sx={{p: {xs: 2, sm: 4}}}>
                         <Alert severity="error">
-                            <Typography variant="h6" gutterBottom>
+                            <Typography variant="h6" gutterBottom sx={{fontSize: {xs: "1rem", sm: "1.25rem"}}}>
                                 Processing Failed
                             </Typography>
-                            <Typography variant="body2">{currentWriting.comment || "An error occurred while processing your writing. Please try uploading again."}</Typography>
+                            <Typography variant="body2" sx={{fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>
+                                {currentWriting.comment || "An error occurred while processing your writing. Please try uploading again."}
+                            </Typography>
                         </Alert>
                     </Paper>
                 )}

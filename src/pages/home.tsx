@@ -240,7 +240,15 @@ export const HomePage: React.FC = () => {
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="right">
-                                                <IconButton size="small" color="primary" onClick={() => handleView(writing.id)} title="View details">
+                                                <IconButton
+                                                    size="small"
+                                                    color="primary"
+                                                    onClick={() => handleView(writing.id)}
+                                                    title="View details"
+                                                    sx={{
+                                                        mr: {xs: 0, md: 1},
+                                                    }}
+                                                >
                                                     <VisibilityIcon fontSize="small" />
                                                 </IconButton>
                                                 <IconButton size="small" color="error" onClick={() => handleDelete(writing.id)} title="Delete">
