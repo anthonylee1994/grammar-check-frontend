@@ -219,14 +219,11 @@ export const WritingDetailPage: React.FC = () => {
                                 <Typography variant="body2" color="text.secondary">
                                     Created: {formatDate(currentWriting.created_at)}
                                 </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Updated: {formatDate(currentWriting.updated_at)}
-                                </Typography>
                             </Stack>
                         </Box>
                         <Box sx={{textAlign: "center"}}>
                             <Typography variant="h3" color="error" fontWeight={700}>
-                                {currentWriting.error_count}
+                                {currentWriting.error_count || 0}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                                 Errors Found
