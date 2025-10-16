@@ -1,6 +1,6 @@
 import {useEffect} from "react";
 import {useParams, useNavigate} from "react-router-dom";
-import {Box, Container, Typography, Button, Paper, Chip, CircularProgress, Alert, Divider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip} from "@mui/material";
+import {Box, Container, Typography, Paper, Chip, CircularProgress, Alert, Divider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, IconButton} from "@mui/material";
 import {ArrowBack as ArrowBackIcon, Image as ImageIcon} from "@mui/icons-material";
 import {useAuthStore} from "../stores/authStore";
 import {useWritingStore} from "../stores/writingStore";
@@ -196,9 +196,11 @@ export const WritingDetailPage: React.FC = () => {
         <Box sx={{minHeight: "100vh", backgroundColor: "rgb(247, 251, 255)", py: {xs: 2, sm: 3, md: 4}}}>
             <Container maxWidth="lg" sx={{px: {xs: 2, sm: 3}}}>
                 <Box sx={{mb: {xs: 2, md: 3}}}>
-                    <Button startIcon={<ArrowBackIcon />} onClick={() => navigate("/")} variant="outlined" sx={{fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>
-                        Back
-                    </Button>
+                    <Tooltip title="Back">
+                        <IconButton onClick={() => navigate("/")}>
+                            <ArrowBackIcon />
+                        </IconButton>
+                    </Tooltip>
                 </Box>
 
                 {error && (
