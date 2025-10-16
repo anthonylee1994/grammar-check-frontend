@@ -215,7 +215,17 @@ export const HomePage: React.FC = () => {
     }
 
     return (
-        <Box sx={{display: "flex", justifyContent: "center", alignItems: "flex-start", minHeight: "100vh", backgroundColor: "rgb(247, 251, 255)", py: 4}}>
+        <Box
+            sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                minHeight: "100vh",
+                background: "linear-gradient(135deg, #E3F2FD 0%, #F3E5F5 50%, #FFF8E1 100%)",
+                py: 4,
+                px: 2,
+            }}
+        >
             <Container maxWidth="lg">
                 <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4}}>
                     <Box sx={{width: "100%", display: "flex", gap: 1, alignItems: "center", justifyContent: "space-between"}}>
@@ -252,7 +262,16 @@ export const HomePage: React.FC = () => {
                     </Alert>
                 )}
 
-                <Paper elevation={2} sx={{width: "100%", overflow: "hidden"}}>
+                <Paper
+                    elevation={8}
+                    sx={{
+                        width: "100%",
+                        overflow: "hidden",
+                        borderRadius: 3,
+                        backdropFilter: "blur(6px)",
+                        bgcolor: "rgba(255,255,255,0.9)",
+                    }}
+                >
                     <TableContainer>
                         <Table sx={{minWidth: 650}}>
                             <TableHead>

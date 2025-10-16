@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {useNavigate} from "react-router-dom";
-import {Box, Button, Container, TextField, Typography, Paper, Alert, Link as MuiLink} from "@mui/material";
+import {Box, Button, Container, TextField, Typography, Paper, Alert, Link as MuiLink, InputAdornment, IconButton, Divider, Avatar} from "@mui/material";
+import {Visibility, VisibilityOff, Login as LoginIcon} from "@mui/icons-material";
 import {useAuthStore} from "../stores/authStore";
 
 interface LoginFormData {
@@ -15,6 +16,7 @@ export const LoginPage: React.FC = () => {
     const isAuthenticated = useAuthStore(state => state.isAuthenticated);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     // Redirect if already logged in
     useEffect(() => {
@@ -49,28 +51,46 @@ export const LoginPage: React.FC = () => {
     };
 
     return (
-        <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", backgroundColor: "rgb(247, 251, 255)"}}>
-            <Container component="main" maxWidth="xs" sx={{display: "flex", justifyContent: "center", alignItems: "center", height: "100vh"}}>
+        <Box
+            sx={{
+                minHeight: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "linear-gradient(135deg, #E3F2FD 0%, #F3E5F5 50%, #FFF8E1 100%)",
+                px: 2,
+            }}
+        >
+            <Container component="main" maxWidth="xs" sx={{display: "flex", justifyContent: "center", alignItems: "center"}}>
                 <Box
                     sx={{
-                        marginTop: 8,
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
+                        width: "100%",
                     }}
                 >
                     <Paper
-                        elevation={3}
+                        elevation={8}
                         sx={{
-                            padding: 4,
+                            p: {xs: 3, sm: 4},
                             display: "flex",
                             flexDirection: "column",
                             alignItems: "center",
                             width: "100%",
+                            borderRadius: 3,
+                            backdropFilter: "blur(6px)",
+                            bgcolor: "rgba(255,255,255,0.9)",
                         }}
                     >
-                        <Typography component="h1" variant="h4" sx={{mb: 3, fontWeight: 600}}>
-                            Sign In
+                        <Avatar sx={{bgcolor: "primary.main", width: 56, height: 56, mb: 2}}>
+                            <LoginIcon />
+                        </Avatar>
+                        <Typography component="h1" variant="h4" sx={{mb: 0.5, fontWeight: 700}}>
+                            Welcome back
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{mb: 3}}>
+                            Sign in to continue
                         </Typography>
 
                         {error && (
@@ -79,6 +99,7 @@ export const LoginPage: React.FC = () => {
                             </Alert>
                         )}
 
+                        <Divider sx={{width: "100%", mb: 2}} />
                         <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{width: "100%"}}>
                             <TextField
                                 margin="normal"
@@ -99,7 +120,7 @@ export const LoginPage: React.FC = () => {
                                 margin="normal"
                                 fullWidth
                                 label="Password"
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 id="password"
                                 autoComplete="current-password"
                                 {...register("password", {
@@ -112,13 +133,21 @@ export const LoginPage: React.FC = () => {
                                 error={!!errors.password}
                                 helperText={errors.password?.message}
                                 disabled={isLoading}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(prev => !prev)} edge="end">
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
                             />
 
                             <Button
                                 type="submit"
                                 fullWidth
                                 variant="contained"
-                                loading={isLoading}
                                 sx={{
                                     mt: 3,
                                     mb: 2,
@@ -128,17 +157,18 @@ export const LoginPage: React.FC = () => {
                                 }}
                                 disabled={isLoading}
                             >
-                                Sign In
+                                {isLoading ? "Signing In..." : "Sign In"}
                             </Button>
 
                             <Box sx={{textAlign: "center", mt: 2}}>
-                                <Typography variant="body2" color="text.secondary">
-                                    Don't have an account?{" "}
+                                <Typography variant="body2" color="text.secondary" sx={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+                                    <span>Don't have an account? </span>
                                     <MuiLink
                                         component="button"
                                         variant="body2"
                                         onClick={() => navigate("/register")}
                                         sx={{
+                                            marginLeft: 1,
                                             textDecoration: "none",
                                             fontWeight: 600,
                                             cursor: "pointer",

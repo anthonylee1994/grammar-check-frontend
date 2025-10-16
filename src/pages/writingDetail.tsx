@@ -193,7 +193,14 @@ export const WritingDetailPage: React.FC = () => {
     }
 
     return (
-        <Box sx={{minHeight: "100vh", backgroundColor: "rgb(247, 251, 255)", py: {xs: 2, sm: 3, md: 4}}}>
+        <Box
+            sx={{
+                minHeight: "100vh",
+                background: "linear-gradient(135deg, #E3F2FD 0%, #F3E5F5 50%, #FFF8E1 100%)",
+                py: {xs: 2, sm: 3, md: 4},
+                px: 2,
+            }}
+        >
             <Container maxWidth="lg" sx={{px: {xs: 2, sm: 3}}}>
                 <Box sx={{mb: {xs: 2, md: 3}}}>
                     <Tooltip title="Back">
@@ -210,7 +217,16 @@ export const WritingDetailPage: React.FC = () => {
                 )}
 
                 {/* Header Card */}
-                <Paper elevation={2} sx={{p: {xs: 2, sm: 3}, mb: {xs: 2, md: 3}}}>
+                <Paper
+                    elevation={8}
+                    sx={{
+                        p: {xs: 2, sm: 3},
+                        mb: {xs: 2, md: 3},
+                        borderRadius: 3,
+                        backdropFilter: "blur(6px)",
+                        bgcolor: "rgba(255,255,255,0.9)",
+                    }}
+                >
                     <Box
                         sx={{
                             display: "flex",
@@ -254,7 +270,16 @@ export const WritingDetailPage: React.FC = () => {
 
                 {/* Image */}
                 {currentWriting.image_url && (
-                    <Paper elevation={2} sx={{p: {xs: 2, sm: 3}, mb: {xs: 2, md: 3}}}>
+                    <Paper
+                        elevation={8}
+                        sx={{
+                            p: {xs: 2, sm: 3},
+                            mb: {xs: 2, md: 3},
+                            borderRadius: 3,
+                            backdropFilter: "blur(6px)",
+                            bgcolor: "rgba(255,255,255,0.9)",
+                        }}
+                    >
                         <Typography variant="h6" fontWeight={600} gutterBottom sx={{display: "flex", alignItems: "center", gap: 1, fontSize: {xs: "1rem", sm: "1.25rem"}}}>
                             <ImageIcon sx={{fontSize: {xs: "1.25rem", sm: "1.5rem"}}} /> Original Image
                         </Typography>
@@ -278,7 +303,16 @@ export const WritingDetailPage: React.FC = () => {
                     <Box sx={{display: "flex", gap: {xs: 2, md: 3}, mb: {xs: 2, md: 3}, flexDirection: {xs: "column", md: "row"}}}>
                         {/* Original Text */}
                         <Box sx={{flex: 1}}>
-                            <Paper elevation={2} sx={{p: {xs: 2, sm: 3}, height: "100%"}}>
+                            <Paper
+                                elevation={8}
+                                sx={{
+                                    p: {xs: 2, sm: 3},
+                                    height: "100%",
+                                    borderRadius: 3,
+                                    backdropFilter: "blur(6px)",
+                                    bgcolor: "rgba(255,255,255,0.9)",
+                                }}
+                            >
                                 <Typography variant="h6" fontWeight={600} gutterBottom color="error" sx={{fontSize: {xs: "1rem", sm: "1.25rem"}}}>
                                     Original Text (with errors highlighted)
                                 </Typography>
@@ -289,7 +323,16 @@ export const WritingDetailPage: React.FC = () => {
 
                         {/* Corrected Text */}
                         <Box sx={{flex: 1}}>
-                            <Paper elevation={2} sx={{p: {xs: 2, sm: 3}, height: "100%", backgroundColor: "rgb(237, 247, 237)"}}>
+                            <Paper
+                                elevation={8}
+                                sx={{
+                                    p: {xs: 2, sm: 3},
+                                    height: "100%",
+                                    borderRadius: 3,
+                                    backdropFilter: "blur(6px)",
+                                    bgcolor: "rgba(237, 247, 237, 0.9)",
+                                }}
+                            >
                                 <Typography variant="h6" fontWeight={600} gutterBottom color="success.main" sx={{fontSize: {xs: "1rem", sm: "1.25rem"}}}>
                                     Corrected Text
                                 </Typography>
@@ -304,7 +347,15 @@ export const WritingDetailPage: React.FC = () => {
 
                 {/* Errors Table */}
                 {currentWriting.grammar_errors && currentWriting.grammar_errors.length > 0 && (
-                    <Paper elevation={2} sx={{p: {xs: 2, sm: 3}}}>
+                    <Paper
+                        elevation={8}
+                        sx={{
+                            p: {xs: 2, sm: 3},
+                            borderRadius: 3,
+                            backdropFilter: "blur(6px)",
+                            bgcolor: "rgba(255,255,255,0.9)",
+                        }}
+                    >
                         <Typography variant="h6" fontWeight={600} gutterBottom sx={{fontSize: {xs: "1rem", sm: "1.25rem"}}}>
                             Error Details ({currentWriting.grammar_errors.length})
                         </Typography>
@@ -369,7 +420,16 @@ export const WritingDetailPage: React.FC = () => {
 
                 {/* Processing/Pending State */}
                 {(currentWriting.status === "pending" || currentWriting.status === "processing") && (
-                    <Paper elevation={2} sx={{p: {xs: 3, sm: 4}, textAlign: "center"}}>
+                    <Paper
+                        elevation={8}
+                        sx={{
+                            p: {xs: 3, sm: 4},
+                            textAlign: "center",
+                            borderRadius: 3,
+                            backdropFilter: "blur(6px)",
+                            bgcolor: "rgba(255,255,255,0.9)",
+                        }}
+                    >
                         <CircularProgress sx={{mb: 2}} />
                         <Typography variant="h6" gutterBottom sx={{fontSize: {xs: "1rem", sm: "1.25rem"}}}>
                             {currentWriting.status === "pending" ? "Waiting to Process..." : "Processing Your Writing..."}
@@ -382,7 +442,15 @@ export const WritingDetailPage: React.FC = () => {
 
                 {/* Failed State */}
                 {currentWriting.status === "failed" && (
-                    <Paper elevation={2} sx={{p: {xs: 2, sm: 4}}}>
+                    <Paper
+                        elevation={8}
+                        sx={{
+                            p: {xs: 2, sm: 4},
+                            borderRadius: 3,
+                            backdropFilter: "blur(6px)",
+                            bgcolor: "rgba(255,255,255,0.9)",
+                        }}
+                    >
                         <Alert severity="error">
                             <Typography variant="h6" gutterBottom sx={{fontSize: {xs: "1rem", sm: "1.25rem"}}}>
                                 Processing Failed
