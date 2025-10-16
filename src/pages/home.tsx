@@ -226,7 +226,7 @@ export const HomePage: React.FC = () => {
                                 </Button>
                             )}
                         </Box>
-                        <Box sx={{display: "flex"}}>
+                        <Box sx={{display: "flex", gap: 1}}>
                             <Tooltip title="Refresh">
                                 <IconButton onClick={handleRefresh} disabled={isLoading}>
                                     <RefreshIcon />
