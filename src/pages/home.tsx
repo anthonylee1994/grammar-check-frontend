@@ -33,6 +33,8 @@ export const HomePage: React.FC = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [uploadError, setUploadError] = useState<string | null>(null);
+    const [uploading, setUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState({current: 0, total: 0});
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -84,33 +86,60 @@ export const HomePage: React.FC = () => {
     };
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
 
-        // Validate file type
         const validTypes = ["image/jpeg", "image/jpg", "image/png"];
-        if (!validTypes.includes(file.type)) {
-            setUploadError("Please select only JPG or PNG images");
-            return;
-        }
-
-        // Validate file size (optional - 10MB limit)
         const maxSize = 10 * 1024 * 1024; // 10MB
-        if (file.size > maxSize) {
-            setUploadError("File size must be less than 10MB");
-            return;
+        const filesArray = Array.from(files);
+
+        // Validate all files before uploading
+        for (const file of filesArray) {
+            if (!validTypes.includes(file.type)) {
+                setUploadError(`${file.name} is not a valid file type. Please select only JPG or PNG images.`);
+                return;
+            }
+            if (file.size > maxSize) {
+                setUploadError(`${file.name} exceeds the 10MB size limit.`);
+                return;
+            }
         }
 
-        try {
-            await uploadImage(file);
-            setUploadSuccess(true);
-            // Reset the file input
-            if (fileInputRef.current) {
-                fileInputRef.current.value = "";
+        setUploading(true);
+        setUploadProgress({current: 0, total: filesArray.length});
+
+        let successCount = 0;
+        let failedCount = 0;
+        const errors: string[] = [];
+
+        for (let i = 0; i < filesArray.length; i++) {
+            const file = filesArray[i];
+            setUploadProgress({current: i + 1, total: filesArray.length});
+
+            try {
+                await uploadImage(file);
+                successCount++;
+            } catch (err) {
+                failedCount++;
+                errors.push(file.name);
+                console.error(`Failed to upload ${file.name}:`, err);
             }
-        } catch (err) {
-            setUploadError("Failed to upload image. Please try again.");
-            console.error("Upload error:", err);
+        }
+
+        setUploading(false);
+
+        // Reset the file input
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+
+        // Show appropriate message
+        if (successCount > 0 && failedCount === 0) {
+            setUploadSuccess(true);
+        } else if (successCount > 0 && failedCount > 0) {
+            setUploadError(`${successCount} file(s) uploaded successfully, but ${failedCount} failed: ${errors.join(", ")}`);
+        } else {
+            setUploadError(`Failed to upload all files: ${errors.join(", ")}`);
         }
     };
 
@@ -156,8 +185,8 @@ export const HomePage: React.FC = () => {
                                 <RefreshIcon />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Upload new writing">
-                            <IconButton onClick={handleUpload} disabled={isLoading}>
+                        <Tooltip title="Upload new writing(s)">
+                            <IconButton onClick={handleUpload} disabled={isLoading || uploading}>
                                 <CloudUploadIcon />
                             </IconButton>
                         </Tooltip>
@@ -275,14 +304,21 @@ export const HomePage: React.FC = () => {
                 </Paper>
 
                 {/* Hidden file input */}
-                <input ref={fileInputRef} type="file" accept="image/jpeg,image/jpg,image/png" onChange={handleFileChange} style={{display: "none"}} />
+                <input ref={fileInputRef} type="file" accept="image/jpeg,image/jpg,image/png" multiple onChange={handleFileChange} style={{display: "none"}} />
+
+                {/* Upload progress notification */}
+                <Snackbar open={uploading} message={`Uploading ${uploadProgress.current} of ${uploadProgress.total} file(s)...`} anchorOrigin={{vertical: "bottom", horizontal: "center"}} />
 
                 {/* Success notification */}
                 <Snackbar
                     open={uploadSuccess}
                     autoHideDuration={4000}
                     onClose={() => setUploadSuccess(false)}
-                    message="Image uploaded successfully! Processing will begin shortly."
+                    message={
+                        uploadProgress.total > 1
+                            ? `${uploadProgress.total} images uploaded successfully! Processing will begin shortly.`
+                            : "Image uploaded successfully! Processing will begin shortly."
+                    }
                     anchorOrigin={{vertical: "bottom", horizontal: "center"}}
                 />
 
