@@ -164,16 +164,27 @@ export const useWritingStore = create<WritingState>((set, get) => ({
                 },
 
                 received(data: Writing) {
-                    console.log("Received update:", data);
-
                     // Update current writing
                     set(state => ({
-                        currentWriting: state.currentWriting?.id === data.id ? data : state.currentWriting,
+                        currentWriting:
+                            state.currentWriting?.id === data.id
+                                ? {
+                                      ...state.currentWriting,
+                                      ...data,
+                                  }
+                                : state.currentWriting,
                     }));
 
                     // Update in writings list
                     set(state => ({
-                        writings: state.writings.map(w => (w.id === data.id ? data : w)),
+                        writings: state.writings.map(w =>
+                            w.id === data.id
+                                ? {
+                                      ...state.currentWriting,
+                                      ...data,
+                                  }
+                                : w
+                        ),
                     }));
                 },
             }
