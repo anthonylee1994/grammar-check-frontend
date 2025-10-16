@@ -228,8 +228,9 @@ export const RegisterPage: React.FC = () => {
                                     fontSize: "1rem",
                                 }}
                                 disabled={isLoading || isCheckingUsername || !!usernameError}
+                                loading={isLoading}
                             >
-                                {isLoading ? "Creating account..." : "Sign Up"}
+                                Sign Up
                             </Button>
 
                             <Box sx={{textAlign: "center", mt: 2}}>

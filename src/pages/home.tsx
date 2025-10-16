@@ -11,7 +11,7 @@ import {useWritingStore} from "../stores/writingStore";
 
 export const HomePage: React.FC = () => {
     const navigate = useNavigate();
-    const {user, isAuthenticated, logout} = useAuthStore();
+    const {user, logout} = useAuthStore();
     const {writings, meta, isLoading, error, fetchWritings, deleteWriting, uploadImage, clearError} = useWritingStore();
 
     const [page, setPage] = useState(0);
@@ -26,16 +26,8 @@ export const HomePage: React.FC = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        if (!isAuthenticated) {
-            navigate("/login");
-        }
-    }, [isAuthenticated, navigate]);
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            fetchWritings(page + 1, rowsPerPage);
-        }
-    }, [isAuthenticated, page, rowsPerPage, fetchWritings]);
+        fetchWritings(page + 1, rowsPerPage);
+    }, [page, rowsPerPage, fetchWritings]);
 
     useEffect(() => {
         setSelectedIds([]);

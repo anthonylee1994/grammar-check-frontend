@@ -2,7 +2,6 @@ import {useEffect} from "react";
 import {useParams, useNavigate} from "react-router-dom";
 import {Box, Container, CircularProgress, Alert, Tooltip, IconButton} from "@mui/material";
 import {ArrowBack as ArrowBackIcon} from "@mui/icons-material";
-import {useAuthStore} from "../stores/authStore";
 import {useWritingStore} from "../stores/writingStore";
 import {WritingHeaderCard} from "../components/WritingHeaderCard";
 import {WritingImageCard} from "../components/WritingImageCard";
@@ -13,15 +12,9 @@ import {WritingFailedCard, WritingPendingCard, WritingProcessingCard} from "../c
 export const WritingDetailPage: React.FC = () => {
     const {id} = useParams<{id: string}>();
     const navigate = useNavigate();
-    const {isAuthenticated} = useAuthStore();
     const {currentWriting, isLoading, error, fetchWriting, subscribeToWriting, unsubscribeFromWriting} = useWritingStore();
 
     useEffect(() => {
-        if (!isAuthenticated) {
-            navigate("/login");
-            return;
-        }
-
         if (id) {
             const writingId = parseInt(id, 10);
             fetchWriting(writingId);
@@ -31,7 +24,7 @@ export const WritingDetailPage: React.FC = () => {
         return () => {
             unsubscribeFromWriting();
         };
-    }, [id, isAuthenticated, navigate, fetchWriting, subscribeToWriting, unsubscribeFromWriting]);
+    }, [id, fetchWriting, subscribeToWriting, unsubscribeFromWriting]);
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString("en-US", {

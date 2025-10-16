@@ -156,8 +156,9 @@ export const LoginPage: React.FC = () => {
                                     fontSize: "1rem",
                                 }}
                                 disabled={isLoading}
+                                loading={isLoading}
                             >
-                                {isLoading ? "Signing In..." : "Sign In"}
+                                Sign In
                             </Button>
 
                             <Box sx={{textAlign: "center", mt: 2}}>
