@@ -4,7 +4,6 @@ import {Box, Container, CircularProgress, Alert, Tooltip, IconButton} from "@mui
 import {ArrowBack as ArrowBackIcon} from "@mui/icons-material";
 import {useAuthStore} from "../stores/authStore";
 import {useWritingStore} from "../stores/writingStore";
-// import type {Writing, WritingError} from "../types/Writing"; // no longer needed here
 import {WritingHeaderCard} from "../components/WritingHeaderCard";
 import {WritingImageCard} from "../components/WritingImageCard";
 import {WritingTextComparison} from "../components/WritingTextComparison";
@@ -33,8 +32,6 @@ export const WritingDetailPage: React.FC = () => {
             unsubscribeFromWriting();
         };
     }, [id, isAuthenticated, navigate, fetchWriting, subscribeToWriting, unsubscribeFromWriting]);
-
-    // moved to components
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString("en-US", {
