@@ -218,27 +218,31 @@ export const HomePage: React.FC = () => {
         <Box sx={{display: "flex", justifyContent: "center", alignItems: "flex-start", minHeight: "100vh", backgroundColor: "rgb(247, 251, 255)", py: 4}}>
             <Container maxWidth="lg">
                 <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4}}>
-                    <Box sx={{display: "flex", gap: 1, alignItems: "center"}}>
-                        {selectedIds.length > 0 && (
-                            <Button variant="contained" color="error" size="small" startIcon={<DeleteSweepIcon />} onClick={handleBatchDelete} disabled={isLoading} sx={{mr: 1}}>
-                                Delete ({selectedIds.length})
-                            </Button>
-                        )}
-                        <Tooltip title="Refresh">
-                            <IconButton onClick={handleRefresh} disabled={isLoading}>
-                                <RefreshIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Upload new writing(s)">
-                            <IconButton onClick={handleUpload} disabled={isLoading || uploading}>
-                                <CloudUploadIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Logout">
-                            <IconButton onClick={handleLogout} disabled={isLoading}>
-                                <LogoutRounded />
-                            </IconButton>
-                        </Tooltip>
+                    <Box sx={{width: "100%", display: "flex", gap: 1, alignItems: "center", justifyContent: "space-between"}}>
+                        <Box sx={{display: "flex"}}>
+                            {selectedIds.length > 0 && (
+                                <Button variant="contained" color="error" size="small" startIcon={<DeleteSweepIcon />} onClick={handleBatchDelete} disabled={isLoading} sx={{mr: 1}}>
+                                    Delete ({selectedIds.length})
+                                </Button>
+                            )}
+                        </Box>
+                        <Box sx={{display: "flex"}}>
+                            <Tooltip title="Refresh">
+                                <IconButton onClick={handleRefresh} disabled={isLoading}>
+                                    <RefreshIcon />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Upload new writing(s)">
+                                <IconButton onClick={handleUpload} disabled={isLoading || uploading}>
+                                    <CloudUploadIcon />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Logout">
+                                <IconButton onClick={handleLogout} disabled={isLoading}>
+                                    <LogoutRounded />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
                     </Box>
                 </Box>
 
