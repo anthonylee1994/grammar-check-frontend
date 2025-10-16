@@ -18,8 +18,10 @@ import {
     Alert,
     Snackbar,
     Tooltip,
+    Checkbox,
+    Button,
 } from "@mui/material";
-import {Delete as DeleteIcon, Visibility as VisibilityIcon, CloudUpload as CloudUploadIcon, Refresh as RefreshIcon, LogoutRounded} from "@mui/icons-material";
+import {Delete as DeleteIcon, Visibility as VisibilityIcon, CloudUpload as CloudUploadIcon, Refresh as RefreshIcon, LogoutRounded, DeleteSweep as DeleteSweepIcon} from "@mui/icons-material";
 import {useAuthStore} from "../stores/authStore";
 import {useWritingStore} from "../stores/writingStore";
 import type {Writing} from "../types/Writing";
@@ -35,6 +37,7 @@ export const HomePage: React.FC = () => {
     const [uploadError, setUploadError] = useState<string | null>(null);
     const [uploading, setUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState({current: 0, total: 0});
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -48,6 +51,11 @@ export const HomePage: React.FC = () => {
             fetchWritings(page + 1, rowsPerPage);
         }
     }, [isAuthenticated, page, rowsPerPage, fetchWritings]);
+
+    // Clear selections when writings change (e.g., after refresh or page change)
+    useEffect(() => {
+        setSelectedIds([]);
+    }, [page, rowsPerPage]);
 
     const handleLogout = () => {
         logout();
@@ -83,6 +91,40 @@ export const HomePage: React.FC = () => {
 
     const handleUpload = () => {
         fileInputRef.current?.click();
+    };
+
+    const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.checked) {
+            const allIds = writings.map(writing => writing.id);
+            setSelectedIds(allIds);
+        } else {
+            setSelectedIds([]);
+        }
+    };
+
+    const handleSelectOne = (id: number) => {
+        setSelectedIds(prev => {
+            if (prev.includes(id)) {
+                return prev.filter(selectedId => selectedId !== id);
+            } else {
+                return [...prev, id];
+            }
+        });
+    };
+
+    const handleBatchDelete = async () => {
+        if (selectedIds.length === 0) return;
+
+        const confirmMessage = `Are you sure you want to delete ${selectedIds.length} writing${selectedIds.length > 1 ? "s" : ""}?`;
+        if (window.confirm(confirmMessage)) {
+            try {
+                // Delete all selected writings
+                await Promise.all(selectedIds.map(id => deleteWriting(id)));
+                setSelectedIds([]);
+            } catch (err) {
+                console.error("Failed to delete writings:", err);
+            }
+        }
     };
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -176,10 +218,12 @@ export const HomePage: React.FC = () => {
         <Box sx={{display: "flex", justifyContent: "center", alignItems: "flex-start", minHeight: "100vh", backgroundColor: "rgb(247, 251, 255)", py: 4}}>
             <Container maxWidth="lg">
                 <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4}}>
-                    <Typography variant="h4" component="h1" fontWeight={600} sx={{fontSize: {xs: "1.5rem", sm: "2rem"}}}>
-                        All Writings
-                    </Typography>
-                    <Box sx={{display: "flex", gap: 1}}>
+                    <Box sx={{display: "flex", gap: 1, alignItems: "center"}}>
+                        {selectedIds.length > 0 && (
+                            <Button variant="contained" color="error" size="small" startIcon={<DeleteSweepIcon />} onClick={handleBatchDelete} disabled={isLoading} sx={{mr: 1}}>
+                                Delete ({selectedIds.length})
+                            </Button>
+                        )}
                         <Tooltip title="Refresh">
                             <IconButton onClick={handleRefresh} disabled={isLoading}>
                                 <RefreshIcon />
@@ -209,6 +253,14 @@ export const HomePage: React.FC = () => {
                         <Table sx={{minWidth: 650}}>
                             <TableHead>
                                 <TableRow sx={{backgroundColor: "rgb(239, 246, 255)"}}>
+                                    <TableCell padding="checkbox">
+                                        <Checkbox
+                                            indeterminate={selectedIds.length > 0 && selectedIds.length < writings.length}
+                                            checked={writings.length > 0 && selectedIds.length === writings.length}
+                                            onChange={handleSelectAll}
+                                            disabled={isLoading || writings.length === 0}
+                                        />
+                                    </TableCell>
                                     <TableCell>
                                         <Typography variant="subtitle2" fontWeight={600}>
                                             Title
@@ -239,19 +291,22 @@ export const HomePage: React.FC = () => {
                             <TableBody>
                                 {isLoading ? (
                                     <TableRow>
-                                        <TableCell colSpan={5} align="center" sx={{py: 8}}>
+                                        <TableCell colSpan={6} align="center" sx={{py: 8}}>
                                             <CircularProgress />
                                         </TableCell>
                                     </TableRow>
                                 ) : writings.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={5} align="center" sx={{py: 8}}>
+                                        <TableCell colSpan={6} align="center" sx={{py: 8}}>
                                             <Typography color="text.secondary">No writings found. Upload your first writing to get started!</Typography>
                                         </TableCell>
                                     </TableRow>
                                 ) : (
                                     writings.map(writing => (
-                                        <TableRow key={writing.id} hover sx={{"&:last-child td, &:last-child th": {border: 0}}}>
+                                        <TableRow key={writing.id} hover sx={{"&:last-child td, &:last-child th": {border: 0}}} selected={selectedIds.includes(writing.id)}>
+                                            <TableCell padding="checkbox">
+                                                <Checkbox checked={selectedIds.includes(writing.id)} onChange={() => handleSelectOne(writing.id)} />
+                                            </TableCell>
                                             <TableCell>
                                                 <Typography variant="body2" fontWeight={500}>
                                                     {writing.title || "Untitled"}
