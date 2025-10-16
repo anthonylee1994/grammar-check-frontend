@@ -5,7 +5,7 @@ export const WritingProcessingCard = () => {
         <Paper elevation={8} sx={{p: {xs: 3, sm: 4}, textAlign: "center", borderRadius: 3, backdropFilter: "blur(6px)", bgcolor: "rgba(255,255,255,0.9)"}}>
             <CircularProgress sx={{mb: 2}} />
             <Typography variant="h6" gutterBottom sx={{fontSize: {xs: "1rem", sm: "1.25rem"}}}>
-                Processing Your Writing...
+                Processing the Writing...
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>
                 This page will automatically update when processing is complete.
