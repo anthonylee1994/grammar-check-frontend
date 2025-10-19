@@ -12,6 +12,8 @@ interface WritingState {
     error: string | null;
     consumer: ActionCable.Consumer | null;
     subscription: ActionCable.Subscription | null;
+    userWritingsConsumer: ActionCable.Consumer | null;
+    userWritingsSubscription: ActionCable.Subscription | null;
 
     // Actions
     fetchWritings: (page?: number, perPage?: number) => Promise<void>;
@@ -20,6 +22,8 @@ interface WritingState {
     deleteWriting: (id: number) => Promise<void>;
     subscribeToWriting: (writingId: number) => void;
     unsubscribeFromWriting: () => void;
+    subscribeToAllUserWritings: () => void;
+    unsubscribeFromAllUserWritings: () => void;
     clearError: () => void;
     setCurrentWriting: (writing: Writing | null) => void;
 }
@@ -32,6 +36,8 @@ export const useWritingStore = create<WritingState>((set, get) => ({
     error: null,
     consumer: null,
     subscription: null,
+    userWritingsConsumer: null,
+    userWritingsSubscription: null,
 
     clearError: () => set({error: null}),
 
@@ -205,5 +211,96 @@ export const useWritingStore = create<WritingState>((set, get) => ({
         }
 
         set({consumer: null, subscription: null});
+    },
+
+    subscribeToAllUserWritings: () => {
+        const state = get();
+
+        // Unsubscribe from previous subscription if exists
+        if (state.userWritingsSubscription) {
+            state.userWritingsSubscription.unsubscribe();
+        }
+
+        // Disconnect previous consumer if exists
+        if (state.userWritingsConsumer) {
+            state.userWritingsConsumer.disconnect();
+        }
+
+        const token = useAuthStore.getState().token;
+        if (!token) {
+            console.error("No token available for WebSocket connection");
+            return;
+        }
+
+        const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+        const wsURL = baseURL.replace(/^http/, "ws");
+
+        // Create consumer connection
+        const userWritingsConsumer = ActionCable.createConsumer(`${wsURL}/cable?token=${token}`);
+
+        // Subscribe to UserWritingsChannel
+        const userWritingsSubscription = userWritingsConsumer.subscriptions.create(
+            {
+                channel: "UserWritingsChannel",
+            },
+            {
+                connected() {
+                    console.log("Connected to UserWritingsChannel - listening for all writing updates");
+                },
+
+                disconnected() {
+                    console.log("Disconnected from UserWritingsChannel");
+                },
+
+                received(data: Writing) {
+                    console.log(`Writing ${data.id} status changed to: ${data.status}`);
+
+                    // Update in writings list
+                    set(state => {
+                        const existingIndex = state.writings.findIndex(w => w.id === data.id);
+
+                        if (existingIndex >= 0) {
+                            // Update existing writing
+                            const updatedWritings = [...state.writings];
+                            updatedWritings[existingIndex] = {
+                                ...updatedWritings[existingIndex],
+                                ...data,
+                            };
+                            return {writings: updatedWritings};
+                        } else {
+                            // New writing, add to the beginning of the list
+                            return {writings: [data, ...state.writings]};
+                        }
+                    });
+
+                    // Also update currentWriting if it's the same one
+                    set(state => ({
+                        currentWriting:
+                            state.currentWriting?.id === data.id
+                                ? {
+                                      ...state.currentWriting,
+                                      ...data,
+                                  }
+                                : state.currentWriting,
+                    }));
+                },
+            }
+        );
+
+        set({userWritingsConsumer, userWritingsSubscription});
+    },
+
+    unsubscribeFromAllUserWritings: () => {
+        const state = get();
+
+        if (state.userWritingsSubscription) {
+            state.userWritingsSubscription.unsubscribe();
+        }
+
+        if (state.userWritingsConsumer) {
+            state.userWritingsConsumer.disconnect();
+        }
+
+        set({userWritingsConsumer: null, userWritingsSubscription: null});
     },
 }));

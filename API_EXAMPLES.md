@@ -374,7 +374,9 @@ http DELETE http://localhost:3000/api/v1/writings/1 \
 
 ## 9. WebSocket Connection
 
-### JavaScript Example
+### JavaScript Example - Single Writing
+
+Subscribe to updates for a specific writing:
 
 ```javascript
 import ActionCable from "@rails/actioncable";
@@ -415,6 +417,76 @@ const subscription = cable.subscriptions.create(
 // Unsubscribe when done
 // subscription.unsubscribe();
 ```
+
+### JavaScript Example - All User Writings
+
+Subscribe to updates for ALL writings belonging to the current user:
+
+```javascript
+import ActionCable from "@rails/actioncable";
+
+// Connect with token
+const cable = ActionCable.createConsumer(`ws://localhost:3000/cable?token=${YOUR_TOKEN}`);
+
+// Subscribe to all user writings
+const userWritingsSubscription = cable.subscriptions.create(
+    {
+        channel: "UserWritingsChannel",
+    },
+    {
+        connected() {
+            console.log("Connected to UserWritingsChannel");
+            console.log("Listening for updates on all your writings...");
+        },
+
+        disconnected() {
+            console.log("Disconnected from UserWritingsChannel");
+        },
+
+        received(data) {
+            console.log(`Writing ${data.id} status changed to:`, data.status);
+
+            // Update UI for the specific writing
+            updateWritingInList(data.id, data);
+
+            // Handle different statuses
+            switch (data.status) {
+                case "pending":
+                    showWritingPending(data.id);
+                    break;
+                case "processing":
+                    showWritingProcessing(data.id);
+                    break;
+                case "completed":
+                    showWritingCompleted(data.id, data);
+                    // Optionally show a notification
+                    showNotification(`Writing "${data.title}" is ready!`);
+                    break;
+                case "failed":
+                    showWritingFailed(data.id, data.comment);
+                    break;
+            }
+        },
+    }
+);
+
+// Helper function to update a writing in your list
+function updateWritingInList(writingId, data) {
+    const writingElement = document.querySelector(`[data-writing-id="${writingId}"]`);
+    if (writingElement) {
+        writingElement.dataset.status = data.status;
+        // Update other elements as needed
+    }
+}
+
+// Unsubscribe when done
+// userWritingsSubscription.unsubscribe();
+```
+
+### When to Use Which Channel?
+
+- **WritingChannel**: Use when viewing a single writing's details page. Only receives updates for that specific writing.
+- **UserWritingsChannel**: Use when displaying a list of writings (e.g., dashboard). Receives updates for all user's writings, perfect for real-time list updates.
 
 ### WebSocket Message Format
 

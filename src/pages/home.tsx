@@ -7,12 +7,11 @@ import {ImagePreviewDialog} from "../components/ImagePreviewDialog";
 import {UploadFeedback} from "../components/UploadFeedback";
 import {useAuthStore} from "../stores/authStore";
 import {useWritingStore} from "../stores/writingStore";
-// import type {Writing} from "../types/Writing"; // no longer needed in this file
 
 export const HomePage: React.FC = () => {
     const navigate = useNavigate();
     const {user, logout} = useAuthStore();
-    const {writings, meta, isLoading, error, fetchWritings, deleteWriting, uploadImage, clearError} = useWritingStore();
+    const {writings, meta, isLoading, error, fetchWritings, deleteWriting, uploadImage, clearError, subscribeToAllUserWritings, unsubscribeFromAllUserWritings} = useWritingStore();
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -32,6 +31,14 @@ export const HomePage: React.FC = () => {
     useEffect(() => {
         setSelectedIds([]);
     }, [page, rowsPerPage]);
+
+    useEffect(() => {
+        subscribeToAllUserWritings();
+
+        return () => {
+            unsubscribeFromAllUserWritings();
+        };
+    }, [subscribeToAllUserWritings, unsubscribeFromAllUserWritings]);
 
     const handleLogout = () => {
         logout();
