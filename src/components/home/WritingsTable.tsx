@@ -60,7 +60,7 @@ export const WritingsTable = ({
             <TableContainer>
                 <Table sx={{minWidth: 650}}>
                     <TableHead>
-                        <TableRow sx={{backgroundColor: "rgb(239, 246, 255)", height: 66}}>
+                        <TableRow sx={{backgroundColor: "rgb(239, 246, 255)", height: 67}}>
                             {hasSelection ? (
                                 <React.Fragment>
                                     <TableCell padding="checkbox">
