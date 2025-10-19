@@ -78,7 +78,7 @@ export const WritingsTable = ({
             <TableContainer>
                 <Table sx={{minWidth: 650}}>
                     <TableHead>
-                        <TableRow sx={{backgroundColor: "rgb(239, 246, 255)", height: 64}}>
+                        <TableRow sx={{backgroundColor: "rgb(239, 246, 255)", height: 66}}>
                             {hasSelection ? (
                                 <React.Fragment>
                                     <TableCell padding="checkbox">
@@ -164,7 +164,7 @@ export const WritingsTable = ({
                                     <TableCell padding="checkbox">
                                         <Checkbox checked={selectedIds.includes(writing.id)} onChange={() => onSelectOne(writing.id)} />
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell width={100}>
                                         {writing.image_url ? (
                                             <Avatar
                                                 src={writing.image_url}
@@ -181,17 +181,17 @@ export const WritingsTable = ({
                                         )}
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="body2" fontWeight={500}>
+                                        <Typography variant="body2" fontWeight={500} width={250}>
                                             {writing.title || "Untitled"}
                                         </Typography>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell width={100}>
                                         <Chip label={writing.status} color={getStatusColor(writing.status)} size="small" sx={{textTransform: "capitalize"}} />
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell align="center" width={100}>
                                         <Typography variant="body2">{writing.error_count}</Typography>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell width={200}>
                                         <Typography variant="body2" color="text.secondary">
                                             {formatDate(writing.created_at)}
                                         </Typography>
