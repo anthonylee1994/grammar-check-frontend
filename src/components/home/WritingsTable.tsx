@@ -1,22 +1,4 @@
-import {
-    Avatar,
-    Chip,
-    CircularProgress,
-    IconButton,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TablePagination,
-    TableRow,
-    Tooltip,
-    Typography,
-    Checkbox,
-    Paper,
-    Box,
-    Button,
-} from "@mui/material";
+import {Avatar, Chip, CircularProgress, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography, Checkbox, Paper, Box} from "@mui/material";
 import {Delete as DeleteIcon, Visibility as VisibilityIcon, Close as CloseIcon, DeleteSweep as DeleteSweepIcon} from "@mui/icons-material";
 import type {Writing, WritingListMeta} from "../../types/Writing";
 import React from "react";
