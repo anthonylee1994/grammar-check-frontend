@@ -1,6 +1,25 @@
-import {Avatar, Chip, CircularProgress, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography, Checkbox, Paper} from "@mui/material";
-import {Delete as DeleteIcon, Visibility as VisibilityIcon} from "@mui/icons-material";
+import {
+    Avatar,
+    Chip,
+    CircularProgress,
+    IconButton,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow,
+    Tooltip,
+    Typography,
+    Checkbox,
+    Paper,
+    Box,
+    Button,
+} from "@mui/material";
+import {Delete as DeleteIcon, Visibility as VisibilityIcon, Close as CloseIcon, DeleteSweep as DeleteSweepIcon} from "@mui/icons-material";
 import type {Writing, WritingListMeta} from "../../types/Writing";
+import React from "react";
 
 interface WritingsTableProps {
     writings: Writing[];
@@ -15,6 +34,7 @@ interface WritingsTableProps {
     onChangeRowsPerPage: (newRows: number) => void;
     onView: (id: number) => void;
     onDelete: (id: number) => void;
+    onBatchDelete: () => void;
     onImageClick: (url: string) => void;
     formatDate: (date: string) => string;
 }
@@ -47,53 +67,82 @@ export const WritingsTable = ({
     onChangeRowsPerPage,
     onView,
     onDelete,
+    onBatchDelete,
     onImageClick,
     formatDate,
 }: WritingsTableProps) => {
+    const hasSelection = selectedIds.length > 0;
+
     return (
         <Paper elevation={8} sx={{width: "100%", overflow: "hidden", borderRadius: 3, backdropFilter: "blur(6px)", bgcolor: "rgba(255,255,255,0.9)"}}>
             <TableContainer>
                 <Table sx={{minWidth: 650}}>
                     <TableHead>
-                        <TableRow sx={{backgroundColor: "rgb(239, 246, 255)"}}>
-                            <TableCell padding="checkbox">
-                                <Checkbox
-                                    indeterminate={selectedIds.length > 0 && selectedIds.length < writings.length}
-                                    checked={writings.length > 0 && selectedIds.length === writings.length}
-                                    onChange={e => onSelectAll(e.target.checked)}
-                                    disabled={isLoading || writings.length === 0}
-                                />
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Preview
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Title
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Status
-                                </Typography>
-                            </TableCell>
-                            <TableCell align="center">
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Errors
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Created
-                                </Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Actions
-                                </Typography>
-                            </TableCell>
+                        <TableRow sx={{backgroundColor: "rgb(239, 246, 255)", height: 64}}>
+                            {hasSelection ? (
+                                <React.Fragment>
+                                    <TableCell padding="checkbox">
+                                        <IconButton size="small" onClick={() => onSelectAll(false)} sx={{color: "primary.main"}}>
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                    <TableCell colSpan={6}>
+                                        <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
+                                            <Typography variant="subtitle1" fontWeight={600} color="primary.main">
+                                                {selectedIds.length} item{selectedIds.length > 1 ? "s" : ""} selected
+                                            </Typography>
+                                            <Box sx={{display: "flex", gap: 1}}>
+                                                <Tooltip title="Batch Delete">
+                                                    <IconButton size="small" color="error" onClick={onBatchDelete} disabled={isLoading}>
+                                                        <DeleteSweepIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Box>
+                                        </Box>
+                                    </TableCell>
+                                </React.Fragment>
+                            ) : (
+                                <React.Fragment>
+                                    <TableCell padding="checkbox">
+                                        <Checkbox
+                                            indeterminate={selectedIds.length > 0 && selectedIds.length < writings.length}
+                                            checked={writings.length > 0 && selectedIds.length === writings.length}
+                                            onChange={e => onSelectAll(e.target.checked)}
+                                            disabled={isLoading || writings.length === 0}
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" fontWeight={600}>
+                                            Preview
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" fontWeight={600}>
+                                            Title
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" fontWeight={600}>
+                                            Status
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <Typography variant="subtitle2" fontWeight={600}>
+                                            Errors
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" fontWeight={600}>
+                                            Created
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <Typography variant="subtitle2" fontWeight={600}>
+                                            Actions
+                                        </Typography>
+                                    </TableCell>
+                                </React.Fragment>
+                            )}
                         </TableRow>
                     </TableHead>
                     <TableBody>

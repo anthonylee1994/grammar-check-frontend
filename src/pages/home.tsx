@@ -215,15 +215,7 @@ export const HomePage: React.FC = () => {
         >
             <Container maxWidth="lg">
                 <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4}}>
-                    <WritingsActionsBar
-                        selectedCount={selectedIds.length}
-                        isLoading={isLoading}
-                        uploading={uploading}
-                        onBatchDelete={handleBatchDelete}
-                        onRefresh={handleRefresh}
-                        onUpload={handleUpload}
-                        onLogout={handleLogout}
-                    />
+                    <WritingsActionsBar isLoading={isLoading} uploading={uploading} onRefresh={handleRefresh} onUpload={handleUpload} onLogout={handleLogout} />
                 </Box>
 
                 {error && (
@@ -248,6 +240,7 @@ export const HomePage: React.FC = () => {
                     }}
                     onView={handleView}
                     onDelete={handleDelete}
+                    onBatchDelete={handleBatchDelete}
                     onImageClick={handleImageClick}
                     formatDate={formatDate}
                 />
