@@ -1,10 +1,10 @@
 import {useEffect, useState, useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {Box, Container, Alert} from "@mui/material";
-import {WritingsActionsBar} from "../components/WritingsActionsBar";
-import {WritingsTable} from "../components/WritingsTable";
-import {ImagePreviewDialog} from "../components/ImagePreviewDialog";
-import {UploadFeedback} from "../components/UploadFeedback";
+import {WritingsActionsBar} from "../components/home/WritingsActionsBar";
+import {WritingsTable} from "../components/home/WritingsTable";
+import {ImagePreviewDialog} from "../components/home/ImagePreviewDialog";
+import {UploadFeedback} from "../components/home/UploadFeedback";
 import {useAuthStore} from "../stores/authStore";
 import {useWritingStore} from "../stores/writingStore";
 

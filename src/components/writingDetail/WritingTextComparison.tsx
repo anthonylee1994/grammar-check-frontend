@@ -1,5 +1,5 @@
 import {Box, Divider, Paper, Typography} from "@mui/material";
-import type {WritingError} from "../types/Writing";
+import type {WritingError} from "../../types/Writing";
 import {Tooltip} from "@mui/material";
 
 interface WritingTextComparisonProps {

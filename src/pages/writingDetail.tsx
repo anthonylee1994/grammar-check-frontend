@@ -3,11 +3,11 @@ import {useParams, useNavigate} from "react-router-dom";
 import {Box, Container, CircularProgress, Alert, Tooltip, IconButton} from "@mui/material";
 import {ArrowBack as ArrowBackIcon} from "@mui/icons-material";
 import {useWritingStore} from "../stores/writingStore";
-import {WritingHeaderCard} from "../components/WritingHeaderCard";
-import {WritingImageCard} from "../components/WritingImageCard";
-import {WritingTextComparison} from "../components/WritingTextComparison";
-import {WritingErrorsTable} from "../components/WritingErrorsTable";
-import {WritingFailedCard, WritingPendingCard, WritingProcessingCard} from "../components/WritingStatusCards";
+import {WritingHeaderCard} from "../components/writingDetail/WritingHeaderCard";
+import {WritingImageCard} from "../components/writingDetail/WritingImageCard";
+import {WritingTextComparison} from "../components/writingDetail/WritingTextComparison";
+import {WritingErrorsTable} from "../components/writingDetail/WritingErrorsTable";
+import {WritingFailedCard, WritingPendingCard, WritingProcessingCard} from "../components/writingDetail/WritingStatusCards";
 
 export const WritingDetailPage: React.FC = () => {
     const {id} = useParams<{id: string}>();

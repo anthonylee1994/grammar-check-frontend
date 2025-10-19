@@ -3,7 +3,7 @@ import {LoginPage} from "./pages/login";
 import {RegisterPage} from "./pages/register";
 import {HomePage} from "./pages/home";
 import {WritingDetailPage} from "./pages/writingDetail";
-import {AuthGuard} from "./components/AuthGuard";
+import {AuthGuard} from "./components/shared/AuthGuard";
 
 export const App: React.FC = () => {
     return (

@@ -1,5 +1,5 @@
 import {Paper, Typography, Divider, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Chip} from "@mui/material";
-import type {WritingError} from "../types/Writing";
+import type {WritingError} from "../../types/Writing";
 
 interface WritingErrorsTableProps {
     errors: WritingError[];

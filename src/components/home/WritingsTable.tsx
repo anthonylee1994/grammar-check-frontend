@@ -1,6 +1,6 @@
 import {Avatar, Chip, CircularProgress, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography, Checkbox, Paper} from "@mui/material";
 import {Delete as DeleteIcon, Visibility as VisibilityIcon} from "@mui/icons-material";
-import type {Writing, WritingListMeta} from "../types/Writing";
+import type {Writing, WritingListMeta} from "../../types/Writing";
 
 interface WritingsTableProps {
     writings: Writing[];

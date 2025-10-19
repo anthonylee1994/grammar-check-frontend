@@ -1,5 +1,5 @@
 import {Alert, Box, Chip, Paper, Stack, Typography} from "@mui/material";
-import type {Writing} from "../types/Writing";
+import type {Writing} from "../../types/Writing";
 
 interface WritingHeaderCardProps {
     writing: Writing;
