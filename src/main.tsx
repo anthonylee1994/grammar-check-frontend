@@ -1,7 +1,6 @@
 import {StrictMode} from "react";
 import {createRoot} from "react-dom/client";
 import {ThemeProvider, createTheme, CssBaseline} from "@mui/material";
-import "./index.css";
 import {App} from "./app";
 
 const theme = createTheme({
@@ -14,7 +13,7 @@ const theme = createTheme({
         },
     },
     typography: {
-        fontFamily: ["-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"', "Arial", "sans-serif"].join(","),
+        fontFamily: ["Roboto", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', '"Helvetica Neue"', "Arial", "sans-serif"].join(","),
     },
 });
 

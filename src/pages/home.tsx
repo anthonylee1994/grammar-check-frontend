@@ -5,6 +5,7 @@ import {WritingsActionsBar} from "../components/home/WritingsActionsBar";
 import {WritingsTable} from "../components/home/WritingsTable";
 import {ImagePreviewDialog} from "../components/home/ImagePreviewDialog";
 import {UploadFeedback} from "../components/home/UploadFeedback";
+import {DeleteConfirmDialog} from "../components/home/DeleteConfirmDialog";
 import {useAuthStore} from "../stores/authStore";
 import {useWritingStore} from "../stores/writingStore";
 
@@ -22,6 +23,12 @@ export const HomePage: React.FC = () => {
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const [imageModalOpen, setImageModalOpen] = useState(false);
     const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deleteModalData, setDeleteModalData] = useState<{
+        title: string;
+        message: string;
+        onConfirm: () => void;
+    } | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -46,13 +53,18 @@ export const HomePage: React.FC = () => {
     };
 
     const handleDelete = async (id: number) => {
-        if (window.confirm("Are you sure you want to delete this writing?")) {
-            try {
-                await deleteWriting(id);
-            } catch (err) {
-                console.error("Failed to delete writing:", err);
-            }
-        }
+        setDeleteModalData({
+            title: "Delete Writing",
+            message: "Are you sure you want to delete this writing?",
+            onConfirm: async () => {
+                try {
+                    await deleteWriting(id);
+                } catch (err) {
+                    console.error("Failed to delete writing:", err);
+                }
+            },
+        });
+        setDeleteModalOpen(true);
     };
 
     const handleView = (id: number) => {
@@ -90,14 +102,19 @@ export const HomePage: React.FC = () => {
         if (selectedIds.length === 0) return;
 
         const confirmMessage = `Are you sure you want to delete ${selectedIds.length} writing${selectedIds.length > 1 ? "s" : ""}?`;
-        if (window.confirm(confirmMessage)) {
-            try {
-                await Promise.all(selectedIds.map(id => deleteWriting(id)));
-                setSelectedIds([]);
-            } catch (err) {
-                console.error("Failed to delete writings:", err);
-            }
-        }
+        setDeleteModalData({
+            title: "Delete Writings",
+            message: confirmMessage,
+            onConfirm: async () => {
+                try {
+                    await Promise.all(selectedIds.map(id => deleteWriting(id)));
+                    setSelectedIds([]);
+                } catch (err) {
+                    console.error("Failed to delete writings:", err);
+                }
+            },
+        });
+        setDeleteModalOpen(true);
     };
 
     const handleImageClick = (imageUrl: string) => {
@@ -108,6 +125,11 @@ export const HomePage: React.FC = () => {
     const handleCloseImageModal = () => {
         setImageModalOpen(false);
         setSelectedImageUrl(null);
+    };
+
+    const handleCloseDeleteModal = () => {
+        setDeleteModalOpen(false);
+        setDeleteModalData(null);
     };
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -243,6 +265,16 @@ export const HomePage: React.FC = () => {
                 />
 
                 <ImagePreviewDialog open={imageModalOpen} imageUrl={selectedImageUrl} onClose={handleCloseImageModal} />
+
+                {deleteModalData && (
+                    <DeleteConfirmDialog
+                        open={deleteModalOpen}
+                        onClose={handleCloseDeleteModal}
+                        onConfirm={deleteModalData.onConfirm}
+                        title={deleteModalData.title}
+                        message={deleteModalData.message}
+                    />
+                )}
             </Container>
         </Box>
     );
