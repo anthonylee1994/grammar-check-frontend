@@ -92,12 +92,10 @@ export const useWritingStore = create<WritingState>((set, get) => ({
 
             const newWriting = response.data.writing;
 
-            // Add to writings list
-            set(state => ({
-                writings: [newWriting, ...state.writings],
+            set({
                 currentWriting: newWriting,
                 isLoading: false,
-            }));
+            });
 
             return newWriting;
         } catch (error: any) {
