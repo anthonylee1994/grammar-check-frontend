@@ -1,11 +1,12 @@
 import {useEffect, useState, useRef} from "react";
 import {useNavigate} from "react-router-dom";
-import {Box, Container, Alert} from "@mui/material";
+import {Container, Alert, Box} from "@mui/material";
 import {WritingsActionsBar} from "../components/home/WritingsActionsBar";
 import {WritingsTable} from "../components/home/WritingsTable";
 import {ImagePreviewDialog} from "../components/home/ImagePreviewDialog";
 import {UploadFeedback} from "../components/home/UploadFeedback";
 import {DeleteConfirmDialog} from "../components/home/DeleteConfirmDialog";
+import {DropzoneArea} from "../components/home/DropzoneArea";
 import {useAuthStore} from "../stores/authStore";
 import {useWritingStore} from "../stores/writingStore";
 
@@ -187,6 +188,56 @@ export const HomePage: React.FC = () => {
         }
     };
 
+    const handleFilesDropped = async (files: FileList) => {
+        if (!files || files.length === 0) return;
+
+        const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        const filesArray = Array.from(files);
+
+        for (const file of filesArray) {
+            if (!validTypes.includes(file.type)) {
+                setUploadError(`${file.name} is not a valid file type. Please select only JPG or PNG images.`);
+                return;
+            }
+            if (file.size > maxSize) {
+                setUploadError(`${file.name} exceeds the 10MB size limit.`);
+                return;
+            }
+        }
+
+        setUploading(true);
+        setUploadProgress({current: 0, total: filesArray.length});
+
+        let successCount = 0;
+        let failedCount = 0;
+        const errors: string[] = [];
+
+        for (let i = 0; i < filesArray.length; i++) {
+            const file = filesArray[i];
+            setUploadProgress({current: i + 1, total: filesArray.length});
+
+            try {
+                await uploadImage(file);
+                successCount++;
+            } catch (err) {
+                failedCount++;
+                errors.push(file.name);
+                console.error(`Failed to upload ${file.name}:`, err);
+            }
+        }
+
+        setUploading(false);
+
+        if (successCount > 0 && failedCount === 0) {
+            setUploadSuccess(true);
+        } else if (successCount > 0 && failedCount > 0) {
+            setUploadError(`${successCount} file(s) uploaded successfully, but ${failedCount} failed: ${errors.join(", ")}`);
+        } else {
+            setUploadError(`Failed to upload all files: ${errors.join(", ")}`);
+        }
+    };
+
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString("en-US", {
             year: "numeric",
@@ -202,17 +253,7 @@ export const HomePage: React.FC = () => {
     }
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "flex-start",
-                minHeight: "100vh",
-                background: "linear-gradient(135deg, #E3F2FD 0%, #F3E5F5 50%, #FFF8E1 100%)",
-                py: 4,
-                px: 2,
-            }}
-        >
+        <DropzoneArea onFilesDropped={handleFilesDropped}>
             <Container maxWidth="lg">
                 <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4}}>
                     <WritingsActionsBar isLoading={isLoading} uploading={uploading} onRefresh={handleRefresh} onUpload={handleUpload} onLogout={handleLogout} />
@@ -269,6 +310,6 @@ export const HomePage: React.FC = () => {
                     />
                 )}
             </Container>
-        </Box>
+        </DropzoneArea>
     );
 };
