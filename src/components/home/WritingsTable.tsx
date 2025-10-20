@@ -184,11 +184,13 @@ export const WritingsTable = ({
                                                 <VisibilityIcon fontSize="small" />
                                             </IconButton>
                                         </Tooltip>
-                                        <Tooltip title="Delete">
-                                            <IconButton size="small" color="error" onClick={() => onDelete(writing.id)} title="Delete">
-                                                <DeleteIcon fontSize="small" />
-                                            </IconButton>
-                                        </Tooltip>
+                                        {!hasSelection && (
+                                            <Tooltip title="Delete">
+                                                <IconButton size="small" color="error" onClick={() => onDelete(writing.id)} title="Delete">
+                                                    <DeleteIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                             ))

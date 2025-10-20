@@ -47,7 +47,6 @@ export const HomePage: React.FC = () => {
             onConfirm: async () => {
                 try {
                     await deleteWriting(id);
-                    clearSelection();
                 } catch (err) {
                     console.error("Failed to delete writing:", err);
                 }
