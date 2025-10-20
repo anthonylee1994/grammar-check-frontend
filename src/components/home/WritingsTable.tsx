@@ -71,7 +71,7 @@ export const WritingsTable = ({
                                     <TableCell width={100} />
                                     <TableCell />
                                     <TableCell width={120} />
-                                    <TableCell width={50} />
+                                    <TableCell width={100} />
                                     <TableCell width={200} />
                                     <TableCell width={200}>
                                         <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
@@ -113,7 +113,7 @@ export const WritingsTable = ({
                                             Status
                                         </Typography>
                                     </TableCell>
-                                    <TableCell align="center" width={50}>
+                                    <TableCell align="center" width={100}>
                                         <Typography variant="subtitle2" fontWeight={600}>
                                             Errors
                                         </Typography>
