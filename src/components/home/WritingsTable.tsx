@@ -58,17 +58,22 @@ export const WritingsTable = ({
     return (
         <Paper elevation={8} sx={{width: "100%", overflow: "hidden", borderRadius: 3, backdropFilter: "blur(6px)", bgcolor: "rgba(255,255,255,0.9)"}}>
             <TableContainer>
-                <Table sx={{minWidth: 650}}>
+                <Table sx={{minWidth: 650, tableLayout: "fixed", width: "100%"}}>
                     <TableHead>
                         <TableRow sx={{backgroundColor: "rgb(239, 246, 255)", height: 67}}>
                             {hasSelection ? (
                                 <React.Fragment>
-                                    <TableCell padding="checkbox">
+                                    <TableCell padding="checkbox" width={48}>
                                         <IconButton size="small" onClick={() => onSelectAll(false)} sx={{color: "primary.main"}}>
                                             <CloseIcon />
                                         </IconButton>
                                     </TableCell>
-                                    <TableCell colSpan={6}>
+                                    <TableCell width={100} />
+                                    <TableCell />
+                                    <TableCell width={120} />
+                                    <TableCell width={50} />
+                                    <TableCell width={200} />
+                                    <TableCell width={200}>
                                         <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
                                             <Typography variant="subtitle1" fontWeight={600} color="primary.main">
                                                 {selectedIds.length} item{selectedIds.length > 1 ? "s" : ""} selected
@@ -85,7 +90,7 @@ export const WritingsTable = ({
                                 </React.Fragment>
                             ) : (
                                 <React.Fragment>
-                                    <TableCell padding="checkbox">
+                                    <TableCell padding="checkbox" width={48}>
                                         <Checkbox
                                             indeterminate={selectedIds.length > 0 && selectedIds.length < writings.length}
                                             checked={writings.length > 0 && selectedIds.length === writings.length}
@@ -93,7 +98,7 @@ export const WritingsTable = ({
                                             disabled={isLoading || writings.length === 0}
                                         />
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell width={100}>
                                         <Typography variant="subtitle2" fontWeight={600}>
                                             Preview
                                         </Typography>
@@ -103,22 +108,22 @@ export const WritingsTable = ({
                                             Title
                                         </Typography>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell width={120}>
                                         <Typography variant="subtitle2" fontWeight={600}>
                                             Status
                                         </Typography>
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell align="center" width={50}>
                                         <Typography variant="subtitle2" fontWeight={600}>
                                             Errors
                                         </Typography>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell width={200}>
                                         <Typography variant="subtitle2" fontWeight={600}>
                                             Created
                                         </Typography>
                                     </TableCell>
-                                    <TableCell align="right">
+                                    <TableCell align="right" width={200}>
                                         <Typography variant="subtitle2" fontWeight={600}>
                                             Actions
                                         </Typography>
@@ -143,7 +148,7 @@ export const WritingsTable = ({
                         ) : (
                             writings.map(writing => (
                                 <TableRow key={writing.id} hover sx={{"&:last-child td, &:last-child th": {border: 0}}} selected={selectedIds.includes(writing.id)}>
-                                    <TableCell padding="checkbox">
+                                    <TableCell padding="checkbox" width={48}>
                                         <Checkbox checked={selectedIds.includes(writing.id)} onChange={() => onSelectOne(writing.id)} />
                                     </TableCell>
                                     <TableCell width={100}>
@@ -163,14 +168,14 @@ export const WritingsTable = ({
                                         )}
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="body2" fontWeight={500} width={250}>
+                                        <Typography variant="body2" fontWeight={500}>
                                             {writing.title || "Untitled"}
                                         </Typography>
                                     </TableCell>
-                                    <TableCell width={100}>
+                                    <TableCell width={120}>
                                         <Chip label={writing.status} color={getStatusColor(writing.status)} size="small" sx={{textTransform: "capitalize"}} />
                                     </TableCell>
-                                    <TableCell align="center" width={100}>
+                                    <TableCell align="center" width={50}>
                                         <Typography variant="body2">{writing.error_count}</Typography>
                                     </TableCell>
                                     <TableCell width={200}>
@@ -178,19 +183,17 @@ export const WritingsTable = ({
                                             {formatDate(writing.created_at)}
                                         </Typography>
                                     </TableCell>
-                                    <TableCell align="right">
+                                    <TableCell align="right" width={100}>
                                         <Tooltip title="View details">
                                             <IconButton size="small" color="primary" onClick={() => onView(writing.id)} title="View details" sx={{mr: {xs: 0, md: 1}}}>
                                                 <VisibilityIcon fontSize="small" />
                                             </IconButton>
                                         </Tooltip>
-                                        {!hasSelection && (
-                                            <Tooltip title="Delete">
-                                                <IconButton size="small" color="error" onClick={() => onDelete(writing.id)} title="Delete">
-                                                    <DeleteIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        )}
+                                        <Tooltip title="Delete">
+                                            <IconButton disabled={isLoading || hasSelection} size="small" color="error" onClick={() => onDelete(writing.id)} title="Delete">
+                                                <DeleteIcon fontSize="small" />
+                                            </IconButton>
+                                        </Tooltip>
                                     </TableCell>
                                 </TableRow>
                             ))
