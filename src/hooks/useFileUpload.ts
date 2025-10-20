@@ -11,7 +11,7 @@ export const useFileUpload = () => {
 
     const validateFiles = (files: File[]): string | null => {
         const validTypes = ["image/jpeg", "image/jpg", "image/png"];
-        const maxSize = 10 * 1024 * 1024; // 10MB
+        const maxSize = 25 * 1024 * 1024; // 25MB
 
         for (const file of files) {
             if (!validTypes.includes(file.type)) {
