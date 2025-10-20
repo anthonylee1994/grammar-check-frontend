@@ -18,8 +18,6 @@ export const HomePage: React.FC = () => {
     const navigate = useNavigate();
     const {user, logout} = useAuthStore();
     const {writings, meta, isLoading, error, fetchWritings, deleteWriting, clearError, subscribeToAllUserWritings, unsubscribeFromAllUserWritings} = useWritingStore();
-
-    // Custom hooks
     const {page, rowsPerPage, handlePageChange, handleRowsPerPageChange} = usePagination();
     const {selectedIds, handleSelectAllChecked, handleSelectOne, clearSelection} = useTableSelection(writings, page, rowsPerPage);
     const {imageModalOpen, selectedImageUrl, deleteModalOpen, deleteModalData, openImageModal, closeImageModal, openDeleteModal, closeDeleteModal} = useModalState();
