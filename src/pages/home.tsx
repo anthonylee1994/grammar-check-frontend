@@ -1,4 +1,4 @@
-import {useEffect, useState, useRef} from "react";
+import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {Container, Alert, Box} from "@mui/material";
 import {WritingsActionsBar} from "../components/home/WritingsActionsBar";
@@ -9,36 +9,25 @@ import {DeleteConfirmDialog} from "../components/home/DeleteConfirmDialog";
 import {DropzoneArea} from "../components/home/DropzoneArea";
 import {useAuthStore} from "../stores/authStore";
 import {useWritingStore} from "../stores/writingStore";
+import {usePagination} from "../hooks/usePagination";
+import {useTableSelection} from "../hooks/useTableSelection";
+import {useModalState} from "../hooks/useModalState";
+import {useFileUpload} from "../hooks/useFileUpload";
 
 export const HomePage: React.FC = () => {
     const navigate = useNavigate();
     const {user, logout} = useAuthStore();
-    const {writings, meta, isLoading, error, fetchWritings, deleteWriting, uploadImage, clearError, subscribeToAllUserWritings, unsubscribeFromAllUserWritings} = useWritingStore();
+    const {writings, meta, isLoading, error, fetchWritings, deleteWriting, clearError, subscribeToAllUserWritings, unsubscribeFromAllUserWritings} = useWritingStore();
 
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [uploadSuccess, setUploadSuccess] = useState(false);
-    const [uploadError, setUploadError] = useState<string | null>(null);
-    const [uploading, setUploading] = useState(false);
-    const [uploadProgress, setUploadProgress] = useState({current: 0, total: 0});
-    const [selectedIds, setSelectedIds] = useState<number[]>([]);
-    const [imageModalOpen, setImageModalOpen] = useState(false);
-    const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [deleteModalData, setDeleteModalData] = useState<{
-        title: string;
-        message: string;
-        onConfirm: () => void;
-    } | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    // Custom hooks
+    const {page, rowsPerPage, handlePageChange, handleRowsPerPageChange} = usePagination();
+    const {selectedIds, handleSelectAllChecked, handleSelectOne, clearSelection} = useTableSelection(writings, page, rowsPerPage);
+    const {imageModalOpen, selectedImageUrl, deleteModalOpen, deleteModalData, openImageModal, closeImageModal, openDeleteModal, closeDeleteModal} = useModalState();
+    const {uploading, uploadSuccess, uploadError, uploadProgress, fileInputRef, handleFileChange, handleFilesDropped, handleUpload, clearUploadSuccess, clearUploadError} = useFileUpload();
 
     useEffect(() => {
         fetchWritings(page + 1, rowsPerPage);
     }, [page, rowsPerPage, fetchWritings]);
-
-    useEffect(() => {
-        setSelectedIds([]);
-    }, [page, rowsPerPage]);
 
     useEffect(() => {
         subscribeToAllUserWritings();
@@ -54,7 +43,7 @@ export const HomePage: React.FC = () => {
     };
 
     const handleDelete = async (id: number) => {
-        setDeleteModalData({
+        openDeleteModal({
             title: "Delete Writing",
             message: "Are you sure you want to delete this writing?",
             onConfirm: async () => {
@@ -65,7 +54,6 @@ export const HomePage: React.FC = () => {
                 }
             },
         });
-        setDeleteModalOpen(true);
     };
 
     const handleView = (id: number) => {
@@ -76,166 +64,26 @@ export const HomePage: React.FC = () => {
         fetchWritings(page + 1, rowsPerPage);
     };
 
-    const handleUpload = () => {
-        fileInputRef.current?.click();
-    };
-
-    const handleSelectAllChecked = (checked: boolean) => {
-        if (checked) {
-            const allIds = writings.map(writing => writing.id);
-            setSelectedIds(allIds);
-        } else {
-            setSelectedIds([]);
-        }
-    };
-
-    const handleSelectOne = (id: number) => {
-        setSelectedIds(prev => {
-            if (prev.includes(id)) {
-                return prev.filter(selectedId => selectedId !== id);
-            } else {
-                return [...prev, id];
-            }
-        });
-    };
-
     const handleBatchDelete = async () => {
         if (selectedIds.length === 0) return;
 
         const confirmMessage = `Are you sure you want to delete ${selectedIds.length} writing${selectedIds.length > 1 ? "s" : ""}?`;
-        setDeleteModalData({
+        openDeleteModal({
             title: "Delete Writings",
             message: confirmMessage,
             onConfirm: async () => {
                 try {
                     await Promise.all(selectedIds.map(id => deleteWriting(id)));
-                    setSelectedIds([]);
+                    clearSelection();
                 } catch (err) {
                     console.error("Failed to delete writings:", err);
                 }
             },
         });
-        setDeleteModalOpen(true);
     };
 
     const handleImageClick = (imageUrl: string) => {
-        setSelectedImageUrl(imageUrl);
-        setImageModalOpen(true);
-    };
-
-    const handleCloseImageModal = () => {
-        setImageModalOpen(false);
-        setSelectedImageUrl(null);
-    };
-
-    const handleCloseDeleteModal = () => {
-        setDeleteModalOpen(false);
-        setDeleteModalData(null);
-    };
-
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const files = event.target.files;
-        if (!files || files.length === 0) return;
-
-        const validTypes = ["image/jpeg", "image/jpg", "image/png"];
-        const maxSize = 10 * 1024 * 1024; // 10MB
-        const filesArray = Array.from(files);
-
-        for (const file of filesArray) {
-            if (!validTypes.includes(file.type)) {
-                setUploadError(`${file.name} is not a valid file type. Please select only JPG or PNG images.`);
-                return;
-            }
-            if (file.size > maxSize) {
-                setUploadError(`${file.name} exceeds the 10MB size limit.`);
-                return;
-            }
-        }
-
-        setUploading(true);
-        setUploadProgress({current: 0, total: filesArray.length});
-
-        let successCount = 0;
-        let failedCount = 0;
-        const errors: string[] = [];
-
-        for (let i = 0; i < filesArray.length; i++) {
-            const file = filesArray[i];
-            setUploadProgress({current: i + 1, total: filesArray.length});
-
-            try {
-                await uploadImage(file);
-                successCount++;
-            } catch (err) {
-                failedCount++;
-                errors.push(file.name);
-                console.error(`Failed to upload ${file.name}:`, err);
-            }
-        }
-
-        setUploading(false);
-
-        if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-        }
-
-        if (successCount > 0 && failedCount === 0) {
-            setUploadSuccess(true);
-        } else if (successCount > 0 && failedCount > 0) {
-            setUploadError(`${successCount} file(s) uploaded successfully, but ${failedCount} failed: ${errors.join(", ")}`);
-        } else {
-            setUploadError(`Failed to upload all files: ${errors.join(", ")}`);
-        }
-    };
-
-    const handleFilesDropped = async (files: FileList) => {
-        if (!files || files.length === 0) return;
-
-        const validTypes = ["image/jpeg", "image/jpg", "image/png"];
-        const maxSize = 10 * 1024 * 1024; // 10MB
-        const filesArray = Array.from(files);
-
-        for (const file of filesArray) {
-            if (!validTypes.includes(file.type)) {
-                setUploadError(`${file.name} is not a valid file type. Please select only JPG or PNG images.`);
-                return;
-            }
-            if (file.size > maxSize) {
-                setUploadError(`${file.name} exceeds the 10MB size limit.`);
-                return;
-            }
-        }
-
-        setUploading(true);
-        setUploadProgress({current: 0, total: filesArray.length});
-
-        let successCount = 0;
-        let failedCount = 0;
-        const errors: string[] = [];
-
-        for (let i = 0; i < filesArray.length; i++) {
-            const file = filesArray[i];
-            setUploadProgress({current: i + 1, total: filesArray.length});
-
-            try {
-                await uploadImage(file);
-                successCount++;
-            } catch (err) {
-                failedCount++;
-                errors.push(file.name);
-                console.error(`Failed to upload ${file.name}:`, err);
-            }
-        }
-
-        setUploading(false);
-
-        if (successCount > 0 && failedCount === 0) {
-            setUploadSuccess(true);
-        } else if (successCount > 0 && failedCount > 0) {
-            setUploadError(`${successCount} file(s) uploaded successfully, but ${failedCount} failed: ${errors.join(", ")}`);
-        } else {
-            setUploadError(`Failed to upload all files: ${errors.join(", ")}`);
-        }
+        openImageModal(imageUrl);
     };
 
     const formatDate = (dateString: string) => {
@@ -274,11 +122,8 @@ export const HomePage: React.FC = () => {
                     page={page}
                     onSelectAll={handleSelectAllChecked}
                     onSelectOne={handleSelectOne}
-                    onChangePage={newPage => setPage(newPage)}
-                    onChangeRowsPerPage={newRows => {
-                        setRowsPerPage(newRows);
-                        setPage(0);
-                    }}
+                    onChangePage={handlePageChange}
+                    onChangeRowsPerPage={handleRowsPerPageChange}
                     onView={handleView}
                     onDelete={handleDelete}
                     onBatchDelete={handleBatchDelete}
@@ -293,21 +138,15 @@ export const HomePage: React.FC = () => {
                     uploadProgressCurrent={uploadProgress.current}
                     uploadProgressTotal={uploadProgress.total}
                     uploadSuccess={uploadSuccess}
-                    onCloseSuccess={() => setUploadSuccess(false)}
+                    onCloseSuccess={clearUploadSuccess}
                     uploadError={uploadError}
-                    onCloseError={() => setUploadError(null)}
+                    onCloseError={clearUploadError}
                 />
 
-                <ImagePreviewDialog open={imageModalOpen} imageUrl={selectedImageUrl} onClose={handleCloseImageModal} />
+                <ImagePreviewDialog open={imageModalOpen} imageUrl={selectedImageUrl} onClose={closeImageModal} />
 
                 {deleteModalData && (
-                    <DeleteConfirmDialog
-                        open={deleteModalOpen}
-                        onClose={handleCloseDeleteModal}
-                        onConfirm={deleteModalData.onConfirm}
-                        title={deleteModalData.title}
-                        message={deleteModalData.message}
-                    />
+                    <DeleteConfirmDialog open={deleteModalOpen} onClose={closeDeleteModal} onConfirm={deleteModalData.onConfirm} title={deleteModalData.title} message={deleteModalData.message} />
                 )}
             </Container>
         </DropzoneArea>
