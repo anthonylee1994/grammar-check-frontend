@@ -69,7 +69,7 @@ export const WritingsTable = ({
                                         </IconButton>
                                     </TableCell>
                                     <TableCell width={100} />
-                                    <TableCell />
+                                    <TableCell width={300} />
                                     <TableCell width={120} />
                                     <TableCell width={100} />
                                     <TableCell width={200} />
@@ -103,7 +103,7 @@ export const WritingsTable = ({
                                             Preview
                                         </Typography>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell width={300}>
                                         <Typography variant="subtitle2" fontWeight={600}>
                                             Title
                                         </Typography>
