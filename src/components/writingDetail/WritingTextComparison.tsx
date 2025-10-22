@@ -23,9 +23,12 @@ function HighlightedOriginal({text, errors}: {text: string | null; errors: Writi
     errors.forEach(error => {
         if (!error.original) return;
 
+        const lowerText = text.toLowerCase();
+        const lowerOriginal = error.original.toLowerCase();
+
         let searchIndex = 0;
         while (searchIndex < text.length) {
-            const foundIndex = text.indexOf(error.original, searchIndex);
+            const foundIndex = lowerText.indexOf(lowerOriginal, searchIndex);
             if (foundIndex === -1) break;
 
             let isOverlapping = false;
