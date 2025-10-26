@@ -166,6 +166,7 @@ export const LoginPage: React.FC = () => {
                                     <span>Don't have an account? </span>
                                     <MuiLink
                                         component="button"
+                                        type="button"
                                         variant="body2"
                                         onClick={() => navigate("/register")}
                                         sx={{
