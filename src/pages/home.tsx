@@ -99,7 +99,7 @@ export const HomePage: React.FC = () => {
     }
 
     return (
-        <DropzoneArea onFilesDropped={handleFilesDropped}>
+        <DropzoneArea onFilesDropped={handleFilesDropped} hideOverlay={uploading || imageModalOpen}>
             <Container maxWidth="lg">
                 <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4}}>
                     <WritingsActionsBar isLoading={isLoading} uploading={uploading} onRefresh={handleRefresh} onUpload={handleUpload} onLogout={handleLogout} />

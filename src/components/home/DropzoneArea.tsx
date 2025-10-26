@@ -6,10 +6,11 @@ interface DropzoneAreaProps {
     children: React.ReactNode;
     onFilesDropped: (files: FileList) => void;
     className?: string;
+    hideOverlay: boolean;
     style?: React.CSSProperties;
 }
 
-export const DropzoneArea: React.FC<DropzoneAreaProps> = ({children, onFilesDropped, className, style}) => {
+export const DropzoneArea: React.FC<DropzoneAreaProps> = ({children, onFilesDropped, className, hideOverlay, style}) => {
     const [isDragging, setIsDragging] = useState(false);
     const dragCounter = useRef(0);
 
@@ -50,10 +51,10 @@ export const DropzoneArea: React.FC<DropzoneAreaProps> = ({children, onFilesDrop
 
     return (
         <Box
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
+            onDragEnter={hideOverlay ? undefined : handleDragEnter}
+            onDragLeave={hideOverlay ? undefined : handleDragLeave}
+            onDragOver={hideOverlay ? undefined : handleDragOver}
+            onDrop={hideOverlay ? undefined : handleDrop}
             sx={{
                 display: "flex",
                 justifyContent: "center",
@@ -68,7 +69,7 @@ export const DropzoneArea: React.FC<DropzoneAreaProps> = ({children, onFilesDrop
             className={className}
         >
             {children}
-            <DropzoneOverlay isVisible={isDragging} />
+            {!hideOverlay && <DropzoneOverlay isVisible={isDragging} />}
         </Box>
     );
 };
