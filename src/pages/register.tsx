@@ -238,6 +238,7 @@ export const RegisterPage: React.FC = () => {
                                     <span>Already have an account? </span>
                                     <MuiLink
                                         component="button"
+                                        type="button"
                                         variant="body2"
                                         onClick={() => navigate("/login")}
                                         sx={{
