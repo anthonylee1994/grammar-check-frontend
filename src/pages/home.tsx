@@ -35,10 +35,10 @@ export const HomePage: React.FC = () => {
     }, [subscribeToAllUserWritings, unsubscribeFromAllUserWritings]);
 
     useEffect(() => {
-        if (uploadSuccess) {
+        if (uploading) {
             setPage(0);
         }
-    }, [uploadSuccess, setPage]);
+    }, [uploading, setPage]);
 
     const handleLogout = () => {
         logout();
