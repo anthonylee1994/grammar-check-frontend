@@ -106,10 +106,10 @@ export const useWritingStore = create<WritingState>()(
 
                     const newWriting = response.data.writing;
 
-                    set({
-                        currentWriting: newWriting,
-                        isLoading: false,
-                    });
+                    set({currentWriting: newWriting, page: 0});
+
+                    const {rowsPerPage} = get();
+                    await get().fetchWritings(1, rowsPerPage);
 
                     return newWriting;
                 } catch (error: any) {
@@ -126,12 +126,10 @@ export const useWritingStore = create<WritingState>()(
                 try {
                     await apiClient.delete(`/api/v1/writings/${id}`);
 
-                    // Remove from writings list
-                    set(state => ({
-                        writings: state.writings.filter(w => w.id !== id),
-                        currentWriting: state.currentWriting?.id === id ? null : state.currentWriting,
-                        isLoading: false,
-                    }));
+                    set({currentWriting: null, page: 0});
+
+                    const {rowsPerPage} = get();
+                    await get().fetchWritings(1, rowsPerPage);
                 } catch (error: any) {
                     set({
                         error: error.response?.data?.error || "Failed to delete writing",
