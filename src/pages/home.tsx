@@ -9,7 +9,6 @@ import {DeleteConfirmDialog} from "../components/home/DeleteConfirmDialog";
 import {DropzoneArea} from "../components/home/DropzoneArea";
 import {useAuthStore} from "../stores/authStore";
 import {useWritingStore} from "../stores/writingStore";
-import {usePagination} from "../hooks/usePagination";
 import {useTableSelection} from "../hooks/useTableSelection";
 import {useModalState} from "../hooks/useModalState";
 import {useFileUpload} from "../hooks/useFileUpload";
@@ -17,8 +16,8 @@ import {useFileUpload} from "../hooks/useFileUpload";
 export const HomePage: React.FC = () => {
     const navigate = useNavigate();
     const {user, logout} = useAuthStore();
-    const {writings, meta, isLoading, error, fetchWritings, deleteWriting, clearError, subscribeToAllUserWritings, unsubscribeFromAllUserWritings} = useWritingStore();
-    const {page, rowsPerPage, handlePageChange, handleRowsPerPageChange} = usePagination();
+    const {writings, meta, isLoading, error, page, rowsPerPage, fetchWritings, deleteWriting, clearError, subscribeToAllUserWritings, unsubscribeFromAllUserWritings, setPage, setRowsPerPage} =
+        useWritingStore();
     const {selectedIds, handleSelectAllChecked, handleSelectOne, clearSelection} = useTableSelection(writings, page, rowsPerPage);
     const {imageModalOpen, selectedImageUrl, deleteModalOpen, deleteModalData, openImageModal, closeImageModal, openDeleteModal, closeDeleteModal} = useModalState();
     const {uploading, uploadSuccess, uploadError, uploadProgress, fileInputRef, handleFileChange, handleFilesDropped, handleUpload, clearUploadSuccess, clearUploadError} = useFileUpload();
@@ -120,8 +119,8 @@ export const HomePage: React.FC = () => {
                     page={page}
                     onSelectAll={handleSelectAllChecked}
                     onSelectOne={handleSelectOne}
-                    onChangePage={handlePageChange}
-                    onChangeRowsPerPage={handleRowsPerPageChange}
+                    onChangePage={setPage}
+                    onChangeRowsPerPage={setRowsPerPage}
                     onView={handleView}
                     onDelete={handleDelete}
                     onBatchDelete={handleBatchDelete}
