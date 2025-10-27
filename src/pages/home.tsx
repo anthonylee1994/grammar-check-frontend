@@ -34,6 +34,12 @@ export const HomePage: React.FC = () => {
         };
     }, [subscribeToAllUserWritings, unsubscribeFromAllUserWritings]);
 
+    useEffect(() => {
+        if (uploadSuccess) {
+            setPage(0);
+        }
+    }, [uploadSuccess, setPage]);
+
     const handleLogout = () => {
         logout();
         navigate("/login");
