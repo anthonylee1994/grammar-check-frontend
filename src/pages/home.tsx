@@ -58,7 +58,8 @@ export const HomePage: React.FC = () => {
     };
 
     const handleRefresh = () => {
-        fetchWritings(page + 1, rowsPerPage);
+        setPage(0);
+        fetchWritings(1, rowsPerPage);
     };
 
     const handleBatchDelete = async () => {
