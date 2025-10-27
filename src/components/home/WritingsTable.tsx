@@ -64,7 +64,7 @@ export const WritingsTable = ({
                             {hasSelection ? (
                                 <React.Fragment>
                                     <TableCell padding="checkbox" width={48}>
-                                        <IconButton size="small" onClick={() => onSelectAll(false)} sx={{color: "primary.main"}}>
+                                        <IconButton size="small" onClick={() => onSelectAll(false)} sx={{color: "primary.main", marginLeft: 0.5}}>
                                             <CloseIcon />
                                         </IconButton>
                                     </TableCell>
