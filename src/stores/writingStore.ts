@@ -24,6 +24,7 @@ interface WritingState {
     fetchWriting: (id: number) => Promise<void>;
     uploadImage: (file: File) => Promise<Writing>;
     deleteWriting: (id: number) => Promise<void>;
+    batchDeleteWritings: (ids: number[]) => Promise<{deleted_count: number; message: string}>;
     subscribeToWriting: (writingId: number) => void;
     unsubscribeFromWriting: () => void;
     subscribeToAllUserWritings: () => void;
@@ -133,6 +134,28 @@ export const useWritingStore = create<WritingState>()(
                 } catch (error: any) {
                     set({
                         error: error.response?.data?.error || "Failed to delete writing",
+                        isLoading: false,
+                    });
+                    throw error;
+                }
+            },
+
+            batchDeleteWritings: async (ids: number[]) => {
+                set({isLoading: true, error: null});
+                try {
+                    const response = await apiClient.delete("/api/v1/writings/batch_destroy", {
+                        data: {ids},
+                    });
+
+                    set({currentWriting: null, page: 0});
+
+                    const {rowsPerPage} = get();
+                    await get().fetchWritings(1, rowsPerPage);
+
+                    return response.data;
+                } catch (error: any) {
+                    set({
+                        error: error.response?.data?.error || "Failed to delete writings",
                         isLoading: false,
                     });
                     throw error;

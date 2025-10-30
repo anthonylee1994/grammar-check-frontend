@@ -372,7 +372,67 @@ http DELETE http://localhost:3000/api/v1/writings/1 \
 
 ---
 
-## 9. WebSocket Connection
+## 9. Batch Delete Writings
+
+Delete multiple writings at once by providing an array of IDs.
+
+### curl
+
+```bash
+TOKEN="your_token_here"
+
+curl -X DELETE http://localhost:3000/api/v1/writings/batch_destroy \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ids": [1, 2, 3]
+  }'
+```
+
+### HTTPie
+
+```bash
+http DELETE http://localhost:3000/api/v1/writings/batch_destroy \
+  "Authorization: Bearer $TOKEN" \
+  ids:='[1, 2, 3]'
+```
+
+### Response
+
+```json
+{
+    "deleted_count": 3,
+    "message": "Successfully deleted 3 writing(s)"
+}
+```
+
+**Notes:**
+
+- Only writings belonging to the current user will be deleted
+- If some IDs don't exist or don't belong to you, they will be silently skipped
+- The `deleted_count` reflects the actual number of writings that were deleted
+
+### Error Responses
+
+#### Missing or Invalid IDs
+
+```json
+{
+    "error": "Parameter 'ids' must be a non-empty array"
+}
+```
+
+#### Invalid ID Format
+
+```json
+{
+    "error": "All ids must be valid integers"
+}
+```
+
+---
+
+## 10. WebSocket Connection
 
 ### JavaScript Example - Single Writing
 

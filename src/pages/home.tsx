@@ -16,8 +16,22 @@ import {useFileUpload} from "../hooks/useFileUpload";
 export const HomePage: React.FC = () => {
     const navigate = useNavigate();
     const {user, logout} = useAuthStore();
-    const {writings, meta, isLoading, error, page, rowsPerPage, fetchWritings, deleteWriting, clearError, subscribeToAllUserWritings, unsubscribeFromAllUserWritings, setPage, setRowsPerPage} =
-        useWritingStore();
+    const {
+        writings,
+        meta,
+        isLoading,
+        error,
+        page,
+        rowsPerPage,
+        fetchWritings,
+        deleteWriting,
+        batchDeleteWritings,
+        clearError,
+        subscribeToAllUserWritings,
+        unsubscribeFromAllUserWritings,
+        setPage,
+        setRowsPerPage,
+    } = useWritingStore();
     const {selectedIds, handleSelectAllChecked, handleSelectOne, clearSelection} = useTableSelection(writings, page, rowsPerPage);
     const {imageModalOpen, selectedImageUrl, deleteModalOpen, deleteModalData, openImageModal, closeImageModal, openDeleteModal, closeDeleteModal} = useModalState();
     const {uploading, uploadSuccess, uploadError, uploadProgress, fileInputRef, handleFileChange, handleFilesDropped, handleUpload, clearUploadSuccess, clearUploadError} = useFileUpload();
@@ -71,7 +85,7 @@ export const HomePage: React.FC = () => {
             message: confirmMessage,
             onConfirm: async () => {
                 try {
-                    await Promise.all(selectedIds.map(id => deleteWriting(id)));
+                    await batchDeleteWritings(selectedIds);
                     clearSelection();
                 } catch (err) {
                     console.error("Failed to delete writings:", err);
