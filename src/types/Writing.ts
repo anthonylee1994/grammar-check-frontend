@@ -4,8 +4,6 @@ export interface WritingError {
     original: string;
     correction: string;
     explanation: string;
-    position_start: number;
-    position_end: number;
 }
 
 export interface Writing {

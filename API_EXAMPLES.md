@@ -267,9 +267,7 @@ curl -X GET "http://localhost:3000/api/v1/writings?page=1&per_page=10" \
                     "error_type": "punctuation",
                     "original": "Last summer I",
                     "correction": "Last summer, I",
-                    "explanation": "Add a comma after introductory phrases.",
-                    "position_start": 0,
-                    "position_end": 13
+                    "explanation": "Add a comma after introductory phrases."
                 }
             ]
         }
@@ -325,18 +323,14 @@ http GET http://localhost:3000/api/v1/writings/1 \
                 "error_type": "punctuation",
                 "original": "Last summer I",
                 "correction": "Last summer, I",
-                "explanation": "Add a comma after introductory phrases.",
-                "position_start": 0,
-                "position_end": 13
+                "explanation": "Add a comma after introductory phrases."
             },
             {
                 "id": 2,
                 "error_type": "spelling",
                 "original": "familiy",
                 "correction": "family",
-                "explanation": "Correct spelling is 'family'.",
-                "position_start": 45,
-                "position_end": 52
+                "explanation": "Correct spelling is 'family'."
             }
         ]
     }
@@ -567,9 +561,7 @@ When status changes, you'll receive:
             "error_type": "spelling",
             "original": "...",
             "correction": "...",
-            "explanation": "...",
-            "position_start": 0,
-            "position_end": 5
+            "explanation": "..."
         }
     ]
 }
