@@ -16,6 +16,7 @@
         "@fontsource/roboto": "^5.2.8",
         "@mui/icons-material": "^7.3.4",
         "@mui/material": "^7.3.4",
+        "@mui/x-charts": "^8.17.0",
         "@rails/actioncable": "^8.0.300",
         "axios": "^1.12.2",
         "react": "^19.1.1",

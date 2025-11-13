@@ -1,5 +1,6 @@
 import {Box, IconButton, Tooltip} from "@mui/material";
 import {CloudUpload as CloudUploadIcon, Refresh as RefreshIcon, LogoutRounded} from "@mui/icons-material";
+import {CreditUsageGauge} from "./CreditUsageGauge";
 
 interface WritingsActionsBarProps {
     isLoading: boolean;
@@ -12,6 +13,7 @@ interface WritingsActionsBarProps {
 export const WritingsActionsBar = ({isLoading, uploading, onRefresh, onUpload, onLogout}: WritingsActionsBarProps) => {
     return (
         <Box sx={{width: "100%", display: "flex", gap: 1, alignItems: "center", justifyContent: "flex-end"}}>
+            <CreditUsageGauge disabled={isLoading} />
             <Tooltip title="Refresh">
                 <IconButton onClick={onRefresh} disabled={isLoading}>
                     <RefreshIcon />

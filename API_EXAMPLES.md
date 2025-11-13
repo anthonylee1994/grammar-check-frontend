@@ -426,7 +426,46 @@ http DELETE http://localhost:3000/api/v1/writings/batch_destroy \
 
 ---
 
-## 10. WebSocket Connection
+## 10. Check OpenRouter Credits Balance
+
+Check your OpenRouter API credits balance. This endpoint does not require authentication.
+
+### curl
+
+```bash
+curl -X GET http://localhost:3000/api/v1/credits
+```
+
+### HTTPie
+
+```bash
+http GET http://localhost:3000/api/v1/credits
+```
+
+### Response
+
+```json
+{
+    "credits": 100.5,
+    "usage": 50.2
+}
+```
+
+**Note:** This endpoint uses the server's configured OpenRouter API key to check credits. No authentication token is required.
+
+### Error Response
+
+If the API request fails:
+
+```json
+{
+    "error": "API request failed: Unauthorized"
+}
+```
+
+---
+
+## 11. WebSocket Connection
 
 ### JavaScript Example - Single Writing
 
@@ -639,6 +678,9 @@ curl -X GET http://localhost:3000/api/v1/writings/$WRITING_ID \
 # 6. List all writings
 curl -X GET http://localhost:3000/api/v1/writings \
   -H "Authorization: Bearer $TOKEN" | jq '.'
+
+# 7. Check OpenRouter credits balance
+curl -X GET http://localhost:3000/api/v1/credits | jq '.'
 ```
 
 ---
@@ -707,6 +749,20 @@ Import this JSON into Postman:
                             "value": "teacher1"
                         }
                     ]
+                }
+            }
+        },
+        {
+            "name": "Check OpenRouter Credits",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/api/v1/credits",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "3000",
+                    "path": ["api", "v1", "credits"]
                 }
             }
         }
