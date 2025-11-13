@@ -15,19 +15,25 @@ export const WritingsActionsBar = ({isLoading, uploading, onRefresh, onUpload, o
         <Box sx={{width: "100%", display: "flex", gap: 1, alignItems: "center", justifyContent: "flex-end"}}>
             <CreditUsageGauge disabled={isLoading} />
             <Tooltip title="Refresh">
-                <IconButton onClick={onRefresh} disabled={isLoading}>
-                    <RefreshIcon />
-                </IconButton>
+                <span>
+                    <IconButton onClick={onRefresh} disabled={isLoading}>
+                        <RefreshIcon />
+                    </IconButton>
+                </span>
             </Tooltip>
             <Tooltip title="Upload new writing(s)">
-                <IconButton onClick={onUpload} disabled={isLoading || uploading}>
-                    <CloudUploadIcon />
-                </IconButton>
+                <span>
+                    <IconButton onClick={onUpload} disabled={isLoading || uploading}>
+                        <CloudUploadIcon />
+                    </IconButton>
+                </span>
             </Tooltip>
             <Tooltip title="Logout">
-                <IconButton onClick={onLogout} disabled={isLoading}>
-                    <LogoutRounded />
-                </IconButton>
+                <span>
+                    <IconButton onClick={onLogout} disabled={isLoading}>
+                        <LogoutRounded />
+                    </IconButton>
+                </span>
             </Tooltip>
         </Box>
     );

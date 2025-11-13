@@ -185,12 +185,12 @@ export const WritingsTable = ({
                                     </TableCell>
                                     <TableCell align="right" width={100}>
                                         <Tooltip title="View details">
-                                            <IconButton size="small" color="primary" onClick={() => onView(writing.id)} title="View details" sx={{mr: {xs: 0, md: 1}}}>
+                                            <IconButton size="small" color="primary" onClick={() => onView(writing.id)} sx={{mr: {xs: 0, md: 1}}}>
                                                 <VisibilityIcon fontSize="small" />
                                             </IconButton>
                                         </Tooltip>
                                         <Tooltip title="Delete">
-                                            <IconButton disabled={isLoading || hasSelection} size="small" color="error" onClick={() => onDelete(writing.id)} title="Delete">
+                                            <IconButton disabled={isLoading || hasSelection} size="small" color="error" onClick={() => onDelete(writing.id)}>
                                                 <DeleteIcon fontSize="small" />
                                             </IconButton>
                                         </Tooltip>

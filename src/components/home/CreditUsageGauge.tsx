@@ -67,9 +67,11 @@ export const CreditUsageGauge = ({disabled = false}: CreditUsageGaugeProps) => {
     return (
         <React.Fragment>
             <Tooltip title="Credit Usage">
-                <IconButton onClick={handleClick} disabled={disabled} aria-describedby={id}>
-                    <AttachMoneyIcon />
-                </IconButton>
+                <span>
+                    <IconButton onClick={handleClick} disabled={disabled} aria-describedby={id}>
+                        <AttachMoneyIcon />
+                    </IconButton>
+                </span>
             </Tooltip>
 
             <Popover
