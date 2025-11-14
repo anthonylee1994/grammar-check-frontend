@@ -8,74 +8,56 @@ interface WritingTextComparisonProps {
     errors: WritingError[] | undefined;
 }
 
-function HighlightedOriginal({text, errors}: {text: string | null; errors: WritingError[] | undefined}) {
-    if (!text || !errors || errors.length === 0) {
-        return (
-            <Typography variant="body1" sx={{whiteSpace: "pre-wrap", lineHeight: 1.8, fontSize: {xs: "0.875rem", sm: "1rem"}}}>
-                {text || "No text available"}
-            </Typography>
-        );
-    }
+const HighlightedOriginal = ({text, errors}: {text: string | null; errors: WritingError[] | undefined}) => {
+    const renderPlainText = () => (
+        <Typography variant="body1" sx={{whiteSpace: "pre-wrap", lineHeight: 1.8, fontSize: {xs: "0.875rem", sm: "1rem"}}}>
+            {text || "No text available"}
+        </Typography>
+    );
 
-    const errorMap: Map<number, WritingError> = new Map();
-    const processedErrors: Array<{start: number; end: number; error: WritingError}> = [];
+    if (!text || !errors?.length) return renderPlainText();
 
-    errors.forEach(error => {
-        if (!error.original) return;
+    // Build non-overlapping error regions
+    const errorRegions = errors
+        .reduce<Array<{start: number; end: number; error: WritingError}>>((acc, error) => {
+            if (!error.original) return acc;
 
-        const lowerText = text.toLowerCase();
-        const lowerOriginal = error.original.toLowerCase();
+            const foundIndex = text.toLowerCase().indexOf(error.original.toLowerCase());
+            if (foundIndex === -1) return acc;
 
-        let searchIndex = 0;
-        while (searchIndex < text.length) {
-            const foundIndex = lowerText.indexOf(lowerOriginal, searchIndex);
-            if (foundIndex === -1) break;
+            const end = foundIndex + error.original.length;
+            const hasOverlap = acc.some(region => foundIndex < region.end && end > region.start);
 
-            let isOverlapping = false;
-            for (let i = foundIndex; i < foundIndex + error.original.length; i++) {
-                if (errorMap.has(i)) {
-                    isOverlapping = true;
-                    break;
-                }
+            if (!hasOverlap) {
+                acc.push({start: foundIndex, end, error});
             }
+            return acc;
+        }, [])
+        .sort((a, b) => a.start - b.start);
 
-            if (!isOverlapping) {
-                for (let i = foundIndex; i < foundIndex + error.original.length; i++) {
-                    errorMap.set(i, error);
-                }
-                processedErrors.push({start: foundIndex, end: foundIndex + error.original.length, error});
-                break; // Only highlight first occurrence of each error
-            }
+    // Build text segments with error highlights
+    const segments = errorRegions.reduce<React.ReactElement[]>((acc, {start, end, error}, idx) => {
+        const lastEnd = idx === 0 ? 0 : errorRegions[idx - 1].end;
 
-            searchIndex = foundIndex + 1;
-        }
-    });
-
-    processedErrors.sort((a, b) => a.start - b.start);
-
-    const segments: React.ReactElement[] = [];
-    let lastIndex = 0;
-
-    processedErrors.forEach((item, idx) => {
-        if (item.start > lastIndex) {
-            segments.push(<span key={`text-${idx}`}>{text.slice(lastIndex, item.start)}</span>);
+        if (start > lastEnd) {
+            acc.push(<span key={`text-${idx}`}>{text.slice(lastEnd, start)}</span>);
         }
 
-        segments.push(
+        acc.push(
             <Tooltip
                 key={`error-${idx}`}
                 title={
                     <Box>
                         <Typography variant="subtitle2" sx={{fontWeight: 600, mb: 0.5}}>
-                            {item.error.error_type.replace("_", " ").toUpperCase()}
+                            {error.error_type.replace("_", " ").toUpperCase()}
                         </Typography>
                         <Typography variant="body2" sx={{mb: 0.5}}>
-                            <strong>Original:</strong> {item.error.original}
+                            <strong>Original:</strong> {error.original}
                         </Typography>
                         <Typography variant="body2" sx={{mb: 0.5}}>
-                            <strong>Correction:</strong> {item.error.correction}
+                            <strong>Correction:</strong> {error.correction}
                         </Typography>
-                        <Typography variant="caption">{item.error.explanation}</Typography>
+                        <Typography variant="caption">{error.explanation}</Typography>
                     </Box>
                 }
                 arrow
@@ -92,24 +74,25 @@ function HighlightedOriginal({text, errors}: {text: string | null; errors: Writi
                         "&:hover": {backgroundColor: "rgba(255, 82, 82, 0.3)"},
                     }}
                 >
-                    {text.slice(item.start, item.end)}
+                    {text.slice(start, end)}
                 </Box>
             </Tooltip>
         );
 
-        lastIndex = item.end;
-    });
+        // Add trailing text after last error
+        if (idx === errorRegions.length - 1 && end < text.length) {
+            acc.push(<span key="text-end">{text.slice(end)}</span>);
+        }
 
-    if (lastIndex < text.length) {
-        segments.push(<span key="text-end">{text.slice(lastIndex)}</span>);
-    }
+        return acc;
+    }, []);
 
     return (
         <Typography variant="body1" component="div" sx={{whiteSpace: "pre-wrap", lineHeight: 1.8, fontSize: {xs: "0.875rem", sm: "1rem"}}}>
             {segments}
         </Typography>
     );
-}
+};
 
 export const WritingTextComparison = ({originalText, correctedText, errors}: WritingTextComparisonProps) => {
     return (
