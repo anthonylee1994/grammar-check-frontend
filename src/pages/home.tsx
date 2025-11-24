@@ -12,6 +12,7 @@ import {useWritingStore} from "../stores/writingStore";
 import {useTableSelection} from "../hooks/useTableSelection";
 import {useModalState} from "../hooks/useModalState";
 import {useFileUpload} from "../hooks/useFileUpload";
+import {formatDate} from "../utils/dateUtils";
 
 export const HomePage: React.FC = () => {
     const navigate = useNavigate();
@@ -96,16 +97,6 @@ export const HomePage: React.FC = () => {
 
     const handleImageClick = (imageUrl: string) => {
         openImageModal(imageUrl);
-    };
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-        });
     };
 
     if (!user) {
