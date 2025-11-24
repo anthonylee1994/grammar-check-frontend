@@ -35,7 +35,7 @@ export const WritingDetailPage: React.FC = () => {
 
     return (
         <GradientBackground>
-            <Container maxWidth="lg" sx={{px: {xs: 2, sm: 3}}}>
+            <Container maxWidth="lg" sx={{px: {xs: 2, sm: 3}, pt: 3, pb: 6}}>
                 <Box sx={{mb: {xs: 2, md: 3}}}>
                     <Tooltip title="Back">
                         <IconButton onClick={() => navigate("/")}>
