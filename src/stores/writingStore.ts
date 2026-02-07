@@ -181,7 +181,7 @@ export const useWritingStore = create<WritingState>()(
                     return;
                 }
 
-                const baseURL = import.meta.env.VITE_API_BASE_URL;
+                const baseURL = import.meta.env.VITE_GRAMMAR_CHECK_API_BASE_URL;
                 const wsURL = baseURL.replace(/^http/, "ws");
 
                 // Create consumer connection
@@ -265,7 +265,7 @@ export const useWritingStore = create<WritingState>()(
                     return;
                 }
 
-                const baseURL = import.meta.env.VITE_API_BASE_URL;
+                const baseURL = import.meta.env.VITE_GRAMMAR_CHECK_API_BASE_URL;
                 const wsURL = baseURL.replace(/^http/, "ws");
 
                 // Create consumer connection

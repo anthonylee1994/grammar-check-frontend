@@ -27,7 +27,7 @@ pnpm install
 2. Create a `.env` file in the root directory:
 
 ```bash
-VITE_API_BASE_URL=http://localhost:3000
+VITE_GRAMMAR_CHECK_API_BASE_URL=http://localhost:3000
 ```
 
 3. Start the development server:
