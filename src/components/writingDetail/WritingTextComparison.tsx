@@ -1,6 +1,6 @@
-import {Box, Divider, Paper, Typography} from "@mui/material";
+import React from "react";
+import {Box, Divider, Paper, Tooltip, Typography} from "@mui/material";
 import type {WritingError} from "../../types/Writing";
-import {Tooltip} from "@mui/material";
 
 interface WritingTextComparisonProps {
     originalText: string | null;
@@ -8,7 +8,63 @@ interface WritingTextComparisonProps {
     errors: WritingError[] | undefined;
 }
 
-const HighlightedOriginal = ({text, errors}: {text: string | null; errors: WritingError[] | undefined}) => {
+interface ErrorRegion {
+    start: number;
+    end: number;
+    error: WritingError;
+}
+
+function escapeRegExp(value: string) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function buildOriginalTextPattern(original: string) {
+    return original.trim().split(/\s+/).filter(Boolean).map(escapeRegExp).join("\\s+");
+}
+
+function getErrorRegions(text: string, errors: WritingError[]) {
+    return errors
+        .reduce<ErrorRegion[]>((acc, error) => {
+            if (!error.original.trim()) return acc;
+
+            const pattern = buildOriginalTextPattern(error.original);
+            if (!pattern) return acc;
+
+            const match = new RegExp(pattern, "i").exec(text);
+            if (!match?.[0]) return acc;
+
+            acc.push({start: match.index, end: match.index + match[0].length, error});
+            return acc;
+        }, [])
+        .sort((a, b) => a.start - b.start || b.end - a.end);
+}
+
+function getSegmentErrors(errorRegions: ErrorRegion[], start: number, end: number) {
+    return errorRegions.filter(region => start < region.end && end > region.start).map(region => region.error);
+}
+
+function renderTooltipTitle(segmentErrors: WritingError[]) {
+    return (
+        <Box>
+            {segmentErrors.map((error, index) => (
+                <Box key={error.id} sx={{mt: index === 0 ? 0 : 1}}>
+                    <Typography variant="subtitle2" sx={{fontWeight: 600, mb: 0.5}}>
+                        {error.error_type.replace("_", " ").toUpperCase()}
+                    </Typography>
+                    <Typography variant="body2" sx={{mb: 0.5}}>
+                        <strong>Original:</strong> {error.original}
+                    </Typography>
+                    <Typography variant="body2" sx={{mb: 0.5}}>
+                        <strong>Correction:</strong> {error.correction}
+                    </Typography>
+                    <Typography variant="caption">{error.explanation}</Typography>
+                </Box>
+            ))}
+        </Box>
+    );
+}
+
+function HighlightedOriginal({text, errors}: {text: string | null; errors: WritingError[] | undefined}) {
     const renderPlainText = () => (
         <Typography variant="body1" sx={{whiteSpace: "pre-wrap", lineHeight: 1.8, fontSize: {xs: "0.875rem", sm: "1rem"}}}>
             {text || "No text available"}
@@ -17,52 +73,23 @@ const HighlightedOriginal = ({text, errors}: {text: string | null; errors: Writi
 
     if (!text || !errors?.length) return renderPlainText();
 
-    // Build non-overlapping error regions
-    const errorRegions = errors
-        .reduce<Array<{start: number; end: number; error: WritingError}>>((acc, error) => {
-            if (!error.original) return acc;
+    const errorRegions = getErrorRegions(text, errors);
+    if (!errorRegions.length) return renderPlainText();
 
-            const foundIndex = text.toLowerCase().indexOf(error.original.toLowerCase());
-            if (foundIndex === -1) return acc;
+    const boundaries = Array.from(new Set([0, text.length, ...errorRegions.flatMap(region => [region.start, region.end])])).sort((a, b) => a - b);
 
-            const end = foundIndex + error.original.length;
-            const hasOverlap = acc.some(region => foundIndex < region.end && end > region.start);
+    const segments = boundaries.slice(0, -1).reduce<React.ReactElement[]>((acc, start, index) => {
+        const end = boundaries[index + 1];
+        const segmentText = text.slice(start, end);
+        const segmentErrors = getSegmentErrors(errorRegions, start, end);
 
-            if (!hasOverlap) {
-                acc.push({start: foundIndex, end, error});
-            }
+        if (!segmentErrors.length) {
+            acc.push(<span key={`text-${start}-${end}`}>{segmentText}</span>);
             return acc;
-        }, [])
-        .sort((a, b) => a.start - b.start);
-
-    // Build text segments with error highlights
-    const segments = errorRegions.reduce<React.ReactElement[]>((acc, {start, end, error}, idx) => {
-        const lastEnd = idx === 0 ? 0 : errorRegions[idx - 1].end;
-
-        if (start > lastEnd) {
-            acc.push(<span key={`text-${idx}`}>{text.slice(lastEnd, start)}</span>);
         }
 
         acc.push(
-            <Tooltip
-                key={`error-${idx}`}
-                title={
-                    <Box>
-                        <Typography variant="subtitle2" sx={{fontWeight: 600, mb: 0.5}}>
-                            {error.error_type.replace("_", " ").toUpperCase()}
-                        </Typography>
-                        <Typography variant="body2" sx={{mb: 0.5}}>
-                            <strong>Original:</strong> {error.original}
-                        </Typography>
-                        <Typography variant="body2" sx={{mb: 0.5}}>
-                            <strong>Correction:</strong> {error.correction}
-                        </Typography>
-                        <Typography variant="caption">{error.explanation}</Typography>
-                    </Box>
-                }
-                arrow
-                placement="top"
-            >
+            <Tooltip key={`error-${start}-${end}`} title={renderTooltipTitle(segmentErrors)} arrow placement="top">
                 <Box
                     component="span"
                     sx={{
@@ -74,15 +101,10 @@ const HighlightedOriginal = ({text, errors}: {text: string | null; errors: Writi
                         "&:hover": {backgroundColor: "rgba(255, 82, 82, 0.3)"},
                     }}
                 >
-                    {text.slice(start, end)}
+                    {segmentText}
                 </Box>
             </Tooltip>
         );
-
-        // Add trailing text after last error
-        if (idx === errorRegions.length - 1 && end < text.length) {
-            acc.push(<span key="text-end">{text.slice(end)}</span>);
-        }
 
         return acc;
     }, []);
@@ -92,7 +114,7 @@ const HighlightedOriginal = ({text, errors}: {text: string | null; errors: Writi
             {segments}
         </Typography>
     );
-};
+}
 
 export const WritingTextComparison = ({originalText, correctedText, errors}: WritingTextComparisonProps) => {
     return (
