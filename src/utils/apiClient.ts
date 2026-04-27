@@ -5,6 +5,19 @@ const apiClient = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
 });
 
+function extractBearerToken(authorizationHeader: string | undefined): string | null {
+    if (!authorizationHeader) {
+        return null;
+    }
+
+    const bearerPrefix = "Bearer ";
+    if (!authorizationHeader.startsWith(bearerPrefix)) {
+        return null;
+    }
+
+    return authorizationHeader.slice(bearerPrefix.length);
+}
+
 // Request interceptor to add token to requests
 apiClient.interceptors.request.use(
     config => {
@@ -21,7 +34,14 @@ apiClient.interceptors.request.use(
 
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
-    response => response,
+    response => {
+        const latestToken = extractBearerToken(response.headers.authorization);
+        if (latestToken) {
+            useAuthStore.getState().setToken(latestToken);
+        }
+
+        return response;
+    },
     error => {
         // Handle 401 Unauthorized - token expired or invalid
         if (error.response?.status === 401) {
