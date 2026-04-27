@@ -25,7 +25,7 @@ export const WritingErrorsTable = ({errors}: WritingErrorsTableProps) => {
 
     return (
         <Paper elevation={8} sx={{p: {xs: 2, sm: 3}, borderRadius: 3, backdropFilter: "blur(6px)", bgcolor: "rgba(255,255,255,0.9)"}}>
-            <Typography variant="h6" fontWeight={600} gutterBottom sx={{fontSize: {xs: "1rem", sm: "1.25rem"}}}>
+            <Typography variant="h6" gutterBottom sx={{fontWeight: 600, fontSize: {xs: "1rem", sm: "1.25rem"}}}>
                 Error Details ({errors.length})
             </Typography>
             <Divider sx={{mb: {xs: 1.5, sm: 2}}} />
@@ -44,7 +44,7 @@ export const WritingErrorsTable = ({errors}: WritingErrorsTableProps) => {
                         {errors.map((error, index) => (
                             <TableRow key={error.id} hover sx={{"&:last-child td, &:last-child th": {border: 0}}}>
                                 <TableCell sx={{px: {xs: 1, sm: 2}}}>
-                                    <Typography variant="body2" fontWeight={600} sx={{fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>
+                                    <Typography variant="body2" sx={{fontWeight: 600, fontSize: {xs: "0.75rem", sm: "0.875rem"}}}>
                                         {index + 1}
                                     </Typography>
                                 </TableCell>

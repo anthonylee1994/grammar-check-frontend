@@ -1,7 +1,7 @@
-import {Avatar, Chip, CircularProgress, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography, Checkbox, Paper, Box} from "@mui/material";
+import React from "react";
+import {Avatar, Box, Checkbox, Chip, CircularProgress, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography} from "@mui/material";
 import {Delete as DeleteIcon, Visibility as VisibilityIcon, Close as CloseIcon, DeleteSweep as DeleteSweepIcon} from "@mui/icons-material";
 import type {Writing, WritingListMeta} from "../../types/Writing";
-import React from "react";
 
 interface WritingsTableProps {
     writings: Writing[];
@@ -75,7 +75,7 @@ export const WritingsTable = ({
                                     <TableCell width={200} />
                                     <TableCell width={200}>
                                         <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
-                                            <Typography variant="subtitle1" fontWeight={600} color="primary.main">
+                                            <Typography variant="subtitle1" color="primary.main" sx={{fontWeight: 600}}>
                                                 {selectedIds.length} item{selectedIds.length > 1 ? "s" : ""} selected
                                             </Typography>
                                             <Box sx={{display: "flex", gap: 1}}>
@@ -99,32 +99,32 @@ export const WritingsTable = ({
                                         />
                                     </TableCell>
                                     <TableCell width={100}>
-                                        <Typography variant="subtitle2" fontWeight={600}>
+                                        <Typography variant="subtitle2" sx={{fontWeight: 600}}>
                                             Preview
                                         </Typography>
                                     </TableCell>
                                     <TableCell width={300}>
-                                        <Typography variant="subtitle2" fontWeight={600}>
+                                        <Typography variant="subtitle2" sx={{fontWeight: 600}}>
                                             Title
                                         </Typography>
                                     </TableCell>
                                     <TableCell width={120}>
-                                        <Typography variant="subtitle2" fontWeight={600}>
+                                        <Typography variant="subtitle2" sx={{fontWeight: 600}}>
                                             Status
                                         </Typography>
                                     </TableCell>
                                     <TableCell align="center" width={100}>
-                                        <Typography variant="subtitle2" fontWeight={600}>
+                                        <Typography variant="subtitle2" sx={{fontWeight: 600}}>
                                             Errors
                                         </Typography>
                                     </TableCell>
                                     <TableCell width={200}>
-                                        <Typography variant="subtitle2" fontWeight={600}>
+                                        <Typography variant="subtitle2" sx={{fontWeight: 600}}>
                                             Created
                                         </Typography>
                                     </TableCell>
                                     <TableCell align="right" width={200}>
-                                        <Typography variant="subtitle2" fontWeight={600}>
+                                        <Typography variant="subtitle2" sx={{fontWeight: 600}}>
                                             Actions
                                         </Typography>
                                     </TableCell>
@@ -161,14 +161,14 @@ export const WritingsTable = ({
                                             />
                                         ) : (
                                             <Avatar variant="rounded" sx={{width: 60, height: 40, bgcolor: "grey.200", color: "grey.500"}}>
-                                                <Typography variant="caption" fontSize="10px">
+                                                <Typography variant="caption" sx={{fontSize: "10px"}}>
                                                     No Image
                                                 </Typography>
                                             </Avatar>
                                         )}
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="body2" fontWeight={500}>
+                                        <Typography variant="body2" sx={{fontWeight: 500}}>
                                             {writing.title || "Untitled"}
                                         </Typography>
                                     </TableCell>

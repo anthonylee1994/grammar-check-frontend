@@ -99,7 +99,7 @@ export const WritingTextComparison = ({originalText, correctedText, errors}: Wri
         <Box sx={{display: "flex", gap: {xs: 2, md: 3}, mb: {xs: 2, md: 3}, flexDirection: {xs: "column", md: "row"}}}>
             <Box sx={{flex: 1}}>
                 <Paper elevation={8} sx={{p: {xs: 2, sm: 3}, height: "100%", borderRadius: 3, backdropFilter: "blur(6px)", bgcolor: "rgba(255,255,255,0.9)"}}>
-                    <Typography variant="h6" fontWeight={600} gutterBottom color="error" sx={{fontSize: {xs: "1rem", sm: "1.25rem"}}}>
+                    <Typography variant="h6" gutterBottom color="error" sx={{fontWeight: 600, fontSize: {xs: "1rem", sm: "1.25rem"}}}>
                         Original Text (with errors highlighted)
                     </Typography>
                     <Divider sx={{mb: {xs: 1.5, sm: 2}}} />
@@ -108,7 +108,7 @@ export const WritingTextComparison = ({originalText, correctedText, errors}: Wri
             </Box>
             <Box sx={{flex: 1}}>
                 <Paper elevation={8} sx={{p: {xs: 2, sm: 3}, height: "100%", borderRadius: 3, backdropFilter: "blur(6px)", bgcolor: "rgba(237, 247, 237, 0.9)"}}>
-                    <Typography variant="h6" fontWeight={600} gutterBottom color="success.main" sx={{fontSize: {xs: "1rem", sm: "1.25rem"}}}>
+                    <Typography variant="h6" gutterBottom color="success.main" sx={{fontWeight: 600, fontSize: {xs: "1rem", sm: "1.25rem"}}}>
                         Corrected Text
                     </Typography>
                     <Divider sx={{mb: {xs: 1.5, sm: 2}}} />
